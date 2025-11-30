@@ -1,0 +1,94 @@
+.app-header {
+  color: #f3f3f3;
+  border-bottom: 1px solid transparent;
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo {
+  width: 89;
+  height: 40px;
+  top: 32px;
+  left: 40px;
+}
+.title-block {
+  display: flex;
+  flex-direction: column;
+}
+.app-title {
+  width: 160;
+  height: 24;
+  margin-left: 24px;
+}
+.app-sub {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.add-button {
+  width: 116;
+  height: 24;
+  top: 6px;
+  left: 939px;
+  font-family: Cabinet Grotesk;
+  font-weight: 700;
+  font-style: Bold;
+  font-size: 20px;
+  line-height: 24px;
+  border: none;
+  color: #000000;
+  background-color: transparent;
+}
+.add-button:hover {
+  opacity: 0.96;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(2, 6, 23, 0.06);
+}
+.user-name {
+  font-size: 14px;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 520px) {
+  .app-header {
+    padding: 12px;
+  }
+  .app-title {
+    font-size: 16px;
+  }
+  .app-sub {
+    font-size: 11px;
+  }
+  .add-button {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}

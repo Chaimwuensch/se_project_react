@@ -1,0 +1,131 @@
+import React, { useEffect, useState } from "react";
+import Header from "./Header";
+import Main from "./Main";
+import Footer from "./Footer";
+import ModalWithForm from "./ModalWithForm";
+import ItemModal from "./ItemModal";
+import { defaultClothingItems } from "../utils/defaultClothingItems";
+import { fetchWeather } from "../utils/weatherApi";
+import { API_KEY, DEFAULT_LAT, DEFAULT_LON } from "../utils/constants";
+
+// App is the top-level wrapper for the whole application.
+// It holds global UI state (modals, selected item, collection data, etc.)
+export default function App() {
+  // Top-level UI state
+  const [activeModal, setActiveModal] = useState(""); // '', 'add', 'item'
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [items, setItems] = useState(defaultClothingItems);
+  const [weather, setWeather] = useState({ temp: undefined, city: "" });
+  const [weatherLoading, setWeatherLoading] = useState(false);
+  const [weatherSource, setWeatherSource] = useState("");
+
+  // Load weather on mount — prefer user geolocation, fall back to default coords
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadUsingCoords(lat, lon, label) {
+      try {
+        const res = await fetchWeather(lat, lon, API_KEY);
+        if (!mounted) return;
+        setWeather({ temp: res.temp, city: res.city });
+        setWeatherLoading(false);
+        setWeatherSource(label);
+      } catch (err) {
+        // if API call fails, fall back
+        if (!mounted) return;
+        setWeather({ temp: 72, city: "Sample City" });
+        setWeatherLoading(false);
+        setWeatherSource("fallback");
+      }
+    }
+
+    async function init() {
+      setWeatherLoading(true);
+
+      // Try browser geolocation first — this will trigger the permission prompt
+      if (navigator?.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            if (!mounted) return;
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            await loadUsingCoords(lat, lon, "geolocation");
+          },
+          // on error (permission denied, timeout) fall back to defaults
+          async () => {
+            if (!mounted) return;
+            await loadUsingCoords(DEFAULT_LAT, DEFAULT_LON, "fallback");
+          },
+          { timeout: 7000 }
+        );
+      } else {
+        // No geolocation support — use defaults
+        await loadUsingCoords(DEFAULT_LAT, DEFAULT_LON, "fallback");
+      }
+    }
+
+    init();
+    return () => (mounted = false);
+  }, []);
+
+  function handleOpenAdd() {
+    setActiveModal("add");
+  }
+
+  function handleCloseModal() {
+    setActiveModal("");
+    setSelectedCard(null);
+  }
+
+  function handleOpenItem(item) {
+    setSelectedCard(item);
+    setActiveModal("item");
+  }
+
+  function handleAddItem(item) {
+    // ensure same shape as existing items
+    const newItem = { _id: item._id || Date.now(), ...item };
+    setItems((prev) => [newItem, ...prev]);
+    handleCloseModal();
+  }
+
+  return (
+    <div className="app-root">
+      <Header onAddClick={handleOpenAdd} location={weather?.city} />
+
+      <div className="container">
+        <Main
+          items={items}
+          onItemClick={handleOpenItem}
+          weather={weather}
+          weatherLoading={weatherLoading}
+        />
+
+        <Footer />
+      </div>
+
+      {/* Modals are controlled from App so they can layer over everything */}
+      <ModalWithForm
+        isOpen={activeModal === "add"}
+        name="add-clothes"
+        title="Add Clothes"
+        buttonText="Add"
+        onClose={handleCloseModal}
+        onSubmit={(formData) => {
+          // For now the formData might be FormData object from placeholder; just add a dummy item
+          if (formData instanceof FormData) {
+            handleAddItem({ name: "New item", weather: "warm", link: "" });
+          } else {
+            handleAddItem(formData);
+          }
+        }}
+      />
+
+      <ItemModal
+        item={selectedCard}
+        onClose={handleCloseModal}
+        isOpen={activeModal === "item"}
+      />
+    </div>
+  );
+}

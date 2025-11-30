@@ -1,0 +1,77 @@
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(323px, 1fr));
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item-card {
+  width: 325px;
+  height: 328px;
+  top: 279px;
+  left: 40px;
+}
+
+.item-card__img {
+  width: 328px;
+  height: 328px;
+  top: 279px;
+  left: 38px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+}
+
+.item-card__name {
+  background: #fff;
+  color: rgba(0, 0, 0, 0.6);
+  padding: 2px 12px;
+  border-radius: 4px;
+  margin: 15px 0 0;
+}
+
+.item-card h5 {
+  margin: 0;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.item-title {
+  padding: 2px 12px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+/* Like icon placed top-right */
+.item-like {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  line-height: 0;
+}
+.item-like svg {
+  display: block;
+}
+.item-like:focus {
+  outline: 2px solid rgba(14, 165, 233, 0.25);
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.08);
+}
+
+@media (max-width: 520px) {
+  .items-grid {
+    gap: 12px;
+  }
+  .item-card__img {
+    width: 100px;
+    height: 100px;
+  }
+}

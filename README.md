@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # WTWR — What To Wear (Frontend)
 
 This repository contains the frontend for the "WTWR" project used in Sprint 10.
@@ -40,8 +39,8 @@ If `API_KEY` is empty the app will use a safe mocked weather (72°F) so the UI s
 ## Notes
 
 - The Add Clothes modal currently uses a placeholder submit handler. Replace the form inputs and `onSubmit` handling in `App.jsx` to persist real data.
-- For production deployment to GitHub Pages, follow the instructions in the sprint notes (add `gh-pages`, `homepage`, `predeploy`/`deploy` scripts and `base` in `vite.config.js`).
-=======
+- # For production deployment to GitHub Pages, follow the instructions in the sprint notes (add `gh-pages`, `homepage`, `predeploy`/`deploy` scripts and `base` in `vite.config.js`).
+
 # WTWR (What to Wear?)
 
 ## About the project
@@ -51,4 +50,5 @@ The idea of the application is pretty simple - we make a call to an API, which t
 ## Links
 
 - [Figma Design](https://www.figma.com/file/DTojSwldenF9UPKQZd6RRb/Sprint-10%3A-WTWR)
->>>>>>> 9c58eb19c6000d324b636939159fc4d3e53442ef
+  > > > > > > > 9c58eb19c6000d324b636939159fc4d3e53442ef
+WORK ON MODAL/(S) AND ADDING CARDS

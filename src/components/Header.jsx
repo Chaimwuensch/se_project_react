@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import logo from "../images/Logo (1).png";
-import avatarImg from "../images/react.svg";
+import profile from "../images/profile.png";
 
-export default function Header({ onAddClick, location }) {
+export default function Header({ onAddClick, location, onProfileClick }) {
   // const [location, setLocation] = useState(
   //   locationProp || "Location unavailable"
   // );
@@ -11,28 +11,6 @@ export default function Header({ onAddClick, location }) {
     month: "long",
     day: "numeric",
   });
-
-  // useEffect(() => {
-  //   // If parent passed a location (from API), use it; otherwise try geolocation
-  //   if (locationProp) return;
-  //   if (!navigator?.geolocation) return;
-
-  //   const onSuccess = (pos) => {
-  //     const { latitude, longitude } = pos.coords;
-  //     setLocation(`${latitude.toFixed(2)}, ${longitude.toFixed(2)}`);
-  //   };
-
-  //   const onError = () => {
-  //     setLocation("Location unavailable");
-  //   };
-
-  //   navigator.geolocation.getCurrentPosition(onSuccess, onError, {
-  //     enableHighAccuracy: false,
-  //     timeout: 5000,
-  //   });
-  // }, [locationProp]);
-
-  // Hardcoded user for now
   const userName = "Chaim Wuensch";
 
   return (
@@ -42,12 +20,13 @@ export default function Header({ onAddClick, location }) {
           <img src={logo} alt="logo" className="logo" />
           <div className="title-block">
             <div className="app-sub">
-              {currentDate} · {location}
+              {currentDate}, {location}
             </div>
           </div>
         </div>
 
         <div className="header-right">
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}></div>
           <button
             className="add-button"
             onClick={onAddClick}
@@ -58,6 +37,11 @@ export default function Header({ onAddClick, location }) {
 
           <div className="user">
             <div className="user-name">{userName}</div>
+            <img
+              src={profile}
+              alt="profile picture"
+              className="user__profile"
+            />
           </div>
         </div>
       </div>

@@ -10,14 +10,22 @@ import { API_KEY, DEFAULT_LAT, DEFAULT_LON } from "../utils/constants";
 
 // App is the top-level wrapper for the whole application.
 // It holds global UI state (modals, selected item, collection data, etc.)
+import { CurrentTemperatureUnitProvider } from "../contexts/CurrentTemperatureUnitContext";
+
 export default function App() {
   // Top-level UI state
   const [activeModal, setActiveModal] = useState(""); // '', 'add', 'item'
   const [selectedCard, setSelectedCard] = useState(null);
   const [items, setItems] = useState(defaultClothingItems);
-  const [weather, setWeather] = useState({ temp: undefined, city: "" });
+  const [weather, setWeather] = useState({
+    temp: undefined,
+    city: "",
+    day: false,
+    condition: undefined,
+  });
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [weatherSource, setWeatherSource] = useState("");
+  const [activeView, setActiveView] = useState("home"); // 'home' | 'profile'
 
   // Load weather on mount — prefer user geolocation, fall back to default coords
   useEffect(() => {
@@ -27,13 +35,23 @@ export default function App() {
       try {
         const res = await fetchWeather(lat, lon, API_KEY);
         if (!mounted) return;
-        setWeather({ temp: res.temp, city: res.city });
+        setWeather({
+          temp: res.temp,
+          city: res.city,
+          day: res.day,
+          condition: res.condition,
+        });
         setWeatherLoading(false);
         setWeatherSource(label);
       } catch (err) {
         // if API call fails, fall back
         if (!mounted) return;
-        setWeather({ temp: 72, city: "Sample City" });
+        setWeather({
+          temp: 72,
+          city: "Sample City",
+          day: undefined,
+          condition: undefined,
+        });
         setWeatherLoading(false);
         setWeatherSource("fallback");
       }
@@ -65,7 +83,6 @@ export default function App() {
     }
 
     init();
-    return () => (mounted = false);
   }, []);
 
   function handleOpenAdd() {
@@ -85,47 +102,89 @@ export default function App() {
   function handleAddItem(item) {
     // ensure same shape as existing items
     const newItem = { _id: item._id || Date.now(), ...item };
-    setItems((prev) => [newItem, ...prev]);
-    handleCloseModal();
+
+    // Try to persist to API if available
+    (async () => {
+      try {
+        const created = await api.createItem(item);
+        // json-server may return `id` instead of `_id` — normalize
+        const stored = {
+          ...(created._id
+            ? created
+            : { _id: created._id || created.id, ...created }),
+        };
+        setItems((prev) => [stored, ...prev]);
+      } catch (e) {
+        // fallback to local add
+        setItems((prev) => [newItem, ...prev]);
+      }
+      handleCloseModal();
+    })();
+  }
+
+  async function handleDeleteItem(id) {
+    // try server delete
+    try {
+      await api.deleteItem(id);
+      setItems((prev) => prev.filter((it) => it._id !== id && it.id !== id));
+    } catch (e) {
+      // fallback to local delete
+      setItems((prev) => prev.filter((it) => it._id !== id && it.id !== id));
+    }
   }
 
   return (
-    <div className="app-root">
-      <Header onAddClick={handleOpenAdd} location={weather?.city} />
-
-      <div className="container">
-        <Main
-          items={items}
-          onItemClick={handleOpenItem}
-          weather={weather}
-          weatherLoading={weatherLoading}
+    <CurrentTemperatureUnitProvider>
+      <div className="app-root">
+        <Header
+          onAddClick={handleOpenAdd}
+          location={weather?.city}
+          onProfileClick={() => setActiveView("profile")}
         />
 
-        <Footer />
+        <div className="container">
+          {activeView === "home" ? (
+            <Main
+              items={items}
+              onItemClick={handleOpenItem}
+              weather={weather}
+              weatherLoading={weatherLoading}
+            />
+          ) : (
+            <Profile
+              items={items}
+              onBack={() => setActiveView("home")}
+              onItemClick={handleOpenItem}
+              onDelete={handleDeleteItem}
+            />
+          )}
+
+          <Footer />
+        </div>
+
+        {/* Modals are controlled from App so they can layer over everything */}
+        <ModalWithForm
+          isOpen={activeModal === "add"}
+          name="add-clothes"
+          title="Add Clothes"
+          buttonText="Add"
+          onClose={handleCloseModal}
+          onSubmit={(formData) => {
+            // For now the formData might be FormData object from placeholder; just add a dummy item
+            if (formData instanceof FormData) {
+              handleAddItem({ name: "New item", weather: "warm", link: "" });
+            } else {
+              handleAddItem(formData);
+            }
+          }}
+        />
+
+        <ItemModal
+          item={selectedCard}
+          onClose={handleCloseModal}
+          isOpen={activeModal === "item"}
+        />
       </div>
-
-      {/* Modals are controlled from App so they can layer over everything */}
-      <ModalWithForm
-        isOpen={activeModal === "add"}
-        name="add-clothes"
-        title="Add Clothes"
-        buttonText="Add"
-        onClose={handleCloseModal}
-        onSubmit={(formData) => {
-          // For now the formData might be FormData object from placeholder; just add a dummy item
-          if (formData instanceof FormData) {
-            handleAddItem({ name: "New item", weather: "warm", link: "" });
-          } else {
-            handleAddItem(formData);
-          }
-        }}
-      />
-
-      <ItemModal
-        item={selectedCard}
-        onClose={handleCloseModal}
-        isOpen={activeModal === "item"}
-      />
-    </div>
+    </CurrentTemperatureUnitProvider>
   );
 }

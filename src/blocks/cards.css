@@ -8,10 +8,9 @@
 }
 
 .item-card {
+  position: relative;
   width: 325px;
   height: 328px;
-  top: 279px;
-  left: 40px;
 }
 
 .item-card__img {
@@ -23,6 +22,11 @@
   border-radius: 20px;
 }
 
+.item-card__content {
+  position: absolute;
+  top: 15px;
+  left: 125px;
+}
 .item-card__name {
   background: #fff;
   color: rgba(0, 0, 0, 0.6);

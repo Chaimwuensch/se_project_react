@@ -22,8 +22,7 @@ export default function Main({
     <main className="main-content">
       <section className="weather-list">
         <WeatherCard
-          temp={temp}
-          city={weather?.city}
+          weather={weather}
           loading={weatherLoading}
         />
       </section>

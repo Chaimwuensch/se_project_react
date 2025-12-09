@@ -21,12 +21,8 @@ export default function ItemCard({ item = {}, onClick }) {
         alt={item.name}
         onClick={handleClick}
       />
-      <div className="item-card__title-and-like">
+      <div className="item-card__content">
         <p className="item-card__name">{item.name || "Untitled"}</p>
-        <button
-          className="item-like"
-          aria-label={`Like ${item.name || "item"}`}
-        ></button>
       </div>
     </li>
   );

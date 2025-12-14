@@ -16,8 +16,8 @@ export default function ClothesSection({ items = [], onItemClick, onDelete }) {
           }}
         >
           {items.map((it) => (
-            <div key={it._id} style={{ padding: 8 }}>
-              <ItemCard item={it} onClick={() => onItemClick(it)} />
+            <div key={it._id}>
+              <ItemCard item={it} onCardClick={onItemClick} />
               <div
                 style={{
                   display: "flex",

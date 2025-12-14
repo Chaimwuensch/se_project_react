@@ -7,7 +7,6 @@ import ItemModal from "./ItemModal";
 import { defaultClothingItems } from "../utils/defaultClothingItems";
 import { fetchWeather } from "../utils/weatherApi";
 import { API_KEY, DEFAULT_LAT, DEFAULT_LON } from "../utils/constants";
-
 // App is the top-level wrapper for the whole application.
 // It holds global UI state (modals, selected item, collection data, etc.)
 import { CurrentTemperatureUnitProvider } from "../contexts/CurrentTemperatureUnitContext";
@@ -99,27 +98,26 @@ export default function App() {
     setActiveModal("item");
   }
 
-  function handleAddItem(item) {
-    // ensure same shape as existing items
-    const newItem = { _id: item._id || Date.now(), ...item };
-
-    // Try to persist to API if available
-    (async () => {
-      try {
-        const created = await api.createItem(item);
-        // json-server may return `id` instead of `_id` — normalize
-        const stored = {
-          ...(created._id
-            ? created
-            : { _id: created._id || created.id, ...created }),
-        };
-        setItems((prev) => [stored, ...prev]);
-      } catch (e) {
-        // fallback to local add
-        setItems((prev) => [newItem, ...prev]);
-      }
-      handleCloseModal();
-    })();
+  async function handleAddItem(item) {
+    // 1. figure out with CORS (cross origin request)
+    // 2. finish this api request
+    // 3. handle the response (res) by rendering all previous cards + new one (by setItems)
+    await api.createItem(item).then((res) => {
+      console.log(res);
+    });
+    //     // json-server may return `id` instead of `_id` — normalize
+    //     const stored = {
+    //       ...(created._id
+    //         ? created
+    //         : { _id: created._id || created.id, ...created }),
+    //     };
+    //     setItems((prev) => [stored, ...prev]);
+    //   } catch (e) {
+    //     // fallback to local add
+    //     setItems((prev) => [newItem, ...prev]);
+    //   }
+    //   handleCloseModal();
+    // })();
   }
 
   async function handleDeleteItem(id) {
@@ -166,16 +164,11 @@ export default function App() {
         <ModalWithForm
           isOpen={activeModal === "add"}
           name="add-clothes"
-          title="Add Clothes"
-          buttonText="Add"
+          title="New garment"
+          buttonText="Add garment"
           onClose={handleCloseModal}
           onSubmit={(formData) => {
-            // For now the formData might be FormData object from placeholder; just add a dummy item
-            if (formData instanceof FormData) {
-              handleAddItem({ name: "New item", weather: "warm", link: "" });
-            } else {
-              handleAddItem(formData);
-            }
+            handleAddItem(Object.fromEntries(formData));
           }}
         />
 

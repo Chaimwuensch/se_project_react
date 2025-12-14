@@ -2,9 +2,9 @@ import React from "react";
 
 import "../blocks/cards.css";
 
-export default function ItemCard({ item = {}, onClick }) {
+export default function ItemCard({ item = {}, onCardClick }) {
   function handleClick() {
-    onClick(item);
+    onCardClick(item);
   }
 
   function handleLike(e) {

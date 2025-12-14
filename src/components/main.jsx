@@ -21,10 +21,7 @@ export default function Main({
   return (
     <main className="main-content">
       <section className="weather-list">
-        <WeatherCard
-          weather={weather}
-          loading={weatherLoading}
-        />
+        <WeatherCard weather={weather} loading={weatherLoading} />
       </section>
 
       <section className="items-list">
@@ -33,11 +30,7 @@ export default function Main({
         ) : (
           <ul className="items-grid">
             {filtered.map((item) => (
-              <ItemCard
-                key={item._id}
-                item={item}
-                onClick={() => onItemClick(item)}
-              />
+              <ItemCard key={item._id} item={item} onCardClick={onItemClick} />
             ))}
           </ul>
         )}

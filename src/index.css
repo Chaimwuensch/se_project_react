@@ -1,11 +1,9 @@
-/* Fonts: approximate Figma look using Inter */
-@import url("https://fonts.cdnfonts.com/css/cabinet-grotesk");
-
 @import "./blocks/header.css";
 @import "./blocks/weather.css";
 @import "./blocks/cards.css";
 @import "./blocks/modal.css";
 
+@import url("https://fonts.cdnfonts.com/css/cabinet-grotesk");
 /* Basic resets helpful for the project */
 * {
   box-sizing: border-box;

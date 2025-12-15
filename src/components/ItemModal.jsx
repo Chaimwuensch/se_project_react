@@ -1,4 +1,5 @@
 import React from "react";
+import close from "../images/close.png";
 
 export default function ItemModal({ item, onClose, isOpen = false }) {
   if (!isOpen) return null;
@@ -7,18 +8,19 @@ export default function ItemModal({ item, onClose, isOpen = false }) {
   return (
     <div className={`modal item-modal modal_is-opened`}>
       <div className="modal-content">
-        <button className="modal-close" onClick={onClose}>
-          Close
+        <button
+          type="button"
+          className="modal-close"
+          aria-label="Close"
+          onClick={onClose}
+        >
+          <img src={close} alt="Close" />
         </button>
-        <h3>{item.name || "Item"}</h3>
         {item.link && (
-          <img
-            src={item.link}
-            alt={item.name}
-            style={{ width: 240, height: 240, objectFit: "contain" }}
-          />
+          <img src={item.link} alt={item.name} className="modal__image" />
         )}
-        <pre>{JSON.stringify(item, null, 2)}</pre>
+
+        <h2 className="modal-title">{item.name || "Item"}</h2>
       </div>
     </div>
   );

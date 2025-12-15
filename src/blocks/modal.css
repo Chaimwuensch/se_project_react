@@ -4,10 +4,11 @@
   position: absolute;
   top: 193px;
   left: 472px;
+  visibility: hidden;
 }
 
 .modal_is-opened {
-  opacity: 1;
+  visibility: visible;
 }
 .modal-content {
   background: #fff;
@@ -16,8 +17,10 @@
   display: flex;
   flex-direction: column;
   border-radius: 20px;
-  width: 496px;
-  height: 436px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 496px;
+  min-height: 436px;
 }
 .modal-close {
   position: absolute;
@@ -39,6 +42,18 @@
   font-size: 16px;
   line-height: 20px;
   color: #000000;
+}
+
+.modal-title_bottom {
+  background-color: white;
+}
+
+.modal__image {
+  max-width: 100%;
+  object-fit: cover;
+  margin-bottom: 20px;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
 }
 
 .modal-form__form {

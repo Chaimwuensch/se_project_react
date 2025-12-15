@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import close from "../images/close.png";
 
 export default function ModalWithForm({
-  isOpen = false,
+  isOpen,
   name = "form",
   title = "Form",
   buttonText = "Submit",

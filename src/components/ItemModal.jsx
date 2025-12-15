@@ -1,6 +1,6 @@
 import React from "react";
 import close from "../images/close.png";
-import modalCss from "../blocks/modal.css";
+import "../blocks/modal.css";
 export default function ItemModal({ item, onClose, isOpen = false }) {
   if (!isOpen) return null;
   if (!item) return null;

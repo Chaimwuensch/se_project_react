@@ -1,5 +1,5 @@
 import React from "react";
-import cardsCss from "../blocks/cards.css";
+import "../blocks/cards.css";
 
 export default function ItemCard({ item = {}, onCardClick }) {
   function handleClick() {

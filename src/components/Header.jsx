@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import logo from "../images/Logo (1).png";
 import profile from "../images/profile.png";
+import HeaderCss from "../blocks/header.css";
 
 export default function Header({ onAddClick, location, onProfileClick }) {
   // const [location, setLocation] = useState(

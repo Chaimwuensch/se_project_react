@@ -2,6 +2,7 @@ import React from "react";
 import { getWeatherCondition } from "../utils/weatherApi";
 import { weatherOptions } from "../utils/constants";
 import { useTemperatureUnit } from "../contexts/CurrentTemperatureUnitContext";
+import weatherCss from "../blocks/weather.css";
 
 export default function WeatherCard({ weather, loading = false }) {
   const day = weather?.day;

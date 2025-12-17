@@ -32,22 +32,29 @@
 }
 
 .modal-title {
-  width: 95;
-  margin: 0;
-  height: 20;
-  padding: 28px 0 0 28px;
+  margin: 20px 0 12px 32px;
+  line-height: 20px;
+  color: #000000;
   font-family: Cabinet Grotesk;
   font-weight: 700;
   font-style: Bold;
-  font-size: 16px;
-  line-height: 20px;
-  color: #000000;
+  font-size: 20px;
+  line-height: 24px;
 }
 
 .modal-title_bottom {
   background-color: white;
 }
 
+.modal-condition {
+  color: #000000;
+  font-family: Cabinet Grotesk;
+  font-weight: 700;
+  font-style: Bold;
+  font-size: 20px;
+  line-height: 24px;
+  margin: 18px 0 32px 32px;
+}
 .modal__image {
   max-width: 100%;
   object-fit: cover;

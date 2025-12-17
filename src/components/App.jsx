@@ -93,35 +93,32 @@ export default function App() {
     setSelectedCard(null);
   }
 
+  useEffect(() => {
+    if (!activeModal) return;
+    const handleEscClose = (e) => {
+      if (e.key === "Escape") {
+        handleCloseModal();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscClose);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscClose);
+    };
+  }, [activeModal]);
   function handleOpenItem(item) {
     setSelectedCard(item);
     setActiveModal("item");
   }
 
   async function handleAddItem(item) {
-    // 1. figure out with CORS (cross origin request)
-    // 2. finish this api request
-    // 3. handle the response (res) by rendering all previous cards + new one (by setItems)
     await api.createItem(item).then((res) => {
       console.log(res);
     });
-    //     // json-server may return `id` instead of `_id` — normalize
-    //     const stored = {
-    //       ...(created._id
-    //         ? created
-    //         : { _id: created._id || created.id, ...created }),
-    //     };
-    //     setItems((prev) => [stored, ...prev]);
-    //   } catch (e) {
-    //     // fallback to local add
-    //     setItems((prev) => [newItem, ...prev]);
-    //   }
-    //   handleCloseModal();
-    // })();
   }
 
   async function handleDeleteItem(id) {
-    // try server delete
     try {
       await api.deleteItem(id);
       setItems((prev) => prev.filter((it) => it._id !== id && it.id !== id));
@@ -160,17 +157,80 @@ export default function App() {
           <Footer />
         </div>
 
-        {/* Modals are controlled from App so they can layer over everything */}
         <ModalWithForm
           isOpen={activeModal === "add"}
           name="add-clothes"
           title="New garment"
-          buttonText="Add garment"
           onClose={handleCloseModal}
           onSubmit={(formData) => {
             handleAddItem(Object.fromEntries(formData));
           }}
-        />
+        >
+          {
+            <form className="modal-form">
+              <div className="modal-form__label_container">
+                <label className="modal-form__label">
+                  Name
+                  <input
+                    name="name"
+                    type="text"
+                    className="modal-form__input"
+                    placeholder="Name"
+                    required
+                  />
+                </label>
+
+                <label className="modal-form__label">
+                  Image
+                  <input
+                    name="imageUrl"
+                    type="url"
+                    className="modal-form__input"
+                    placeholder="Image URL"
+                    required
+                  />
+                </label>
+              </div>
+              <fieldset className="modal-form__fieldset">
+                <legend className="modal-form__legend">
+                  Select the weather type:
+                </legend>
+                <label className="modal-form__radio-label-wrapper">
+                  <input
+                    className="modal-form__radio-input"
+                    type="radio"
+                    name="weather"
+                    value="Hot"
+                  />
+                  <span className="modal-form__radio-label">Hot</span>
+                </label>
+
+                <label className="modal-form__radio-label-wrapper">
+                  <input
+                    className="modal-form__radio-input"
+                    type="radio"
+                    name="weather"
+                    value="Warm"
+                  />
+                  <span className="modal-form__radio-label">Warm</span>
+                </label>
+                <label className="modal-form__radio-label-wrapper">
+                  <input
+                    className="modal-form__radio-input"
+                    type="radio"
+                    name="weather"
+                    value="Cold"
+                  />
+                  <span className="modal-form__radio-label">Cold</span>
+                </label>
+              </fieldset>
+
+              <button type="submit" className="modal-form__submit">
+                Add garment
+              </button>
+            </form>
+          }
+        </ModalWithForm>
 
         <ItemModal
           item={selectedCard}

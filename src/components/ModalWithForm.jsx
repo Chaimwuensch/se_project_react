@@ -10,14 +10,6 @@ export default function ModalWithForm({
   onSubmit,
   children,
 }) {
-  useEffect(() => {
-    function onKey(e) {
-      if (e.key === "Escape") onClose && onClose();
-    }
-    if (isOpen) window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [isOpen, onClose]);
-
   function handleOverlayClick(e) {
     if (e.target.classList.contains("modal")) {
       onClose && onClose();
@@ -39,8 +31,12 @@ export default function ModalWithForm({
           </button>
 
           <h2 className="modal-title">{title}</h2>
-
-          {children}
+          <form className="modal-form">
+            {children}
+            <button type="submit" className="modal-form__submit">
+              Add garment
+            </button>
+          </form>
         </div>
       </div>
     </div>

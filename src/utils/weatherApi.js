@@ -1,12 +1,12 @@
 // Small wrapper around OpenWeather calls and weather condition helper
-
+import { API_KEY } from "./constants";
 const isDay = ({ sunrise, sunset }, now) => {
   return sunrise * 1000 < now && now < sunset * 1000;
 };
 
-export async function fetchWeather(lat, lon, apiKey) {
-  // If there's no API key available, return a safe mock so the UI still works.
-  if (!apiKey) return { temp: 72, city: "Sample City" };
+export async function fetchWeather(lat, lon, API_KEY) {
+  if (!API_KEY)
+    return { temp: 72, city: "Sample City", temperature: { F: 72, C: 22 } };
 
   // Basic validation of coordinates
   if (typeof lat !== "number" || typeof lon !== "number") {
@@ -14,7 +14,7 @@ export async function fetchWeather(lat, lon, apiKey) {
   }
 
   // Call OpenWeather using provided lat/lon and API key
-  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${apiKey}`;
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${API_KEY}`;
 
   const res = await fetch(url);
   if (!res.ok) throw new Error("Weather API request failed");
@@ -25,9 +25,18 @@ export async function fetchWeather(lat, lon, apiKey) {
   const temp = data?.main?.temp;
   const city = data?.name || "";
   const day = isDay(data.sys, Date.now());
-  const condition = data.weather[0].main.toLowerCase();
+  const condition = data.weather[0].main;
 
-  return { temp, city, day, condition };
+  return {
+    temp,
+    city,
+    day,
+    condition,
+    temperature: {
+      F: Math.round(temp),
+      C: Math.round(((temp - 32) * 5) / 9),
+    },
+  };
 }
 
 // Optional helper for mapping temp to a condition string

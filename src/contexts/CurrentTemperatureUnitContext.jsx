@@ -1,31 +1,36 @@
-import React, { createContext, useContext, useState } from "react";
+// src/contexts/CurrentTemperatureUnitContext.js
+import { createContext, useContext, useState } from "react";
 
-const CurrentTemperatureUnitContext = createContext(undefined);
+const CurrentTemperatureUnitContext = createContext();
 
-export function CurrentTemperatureUnitProvider({ children }) {
-  // default to Fahrenheit
-  const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState("F");
+export const CurrentTemperatureUnitProvider = ({ children }) => {
+  const [currentTemperatureUnit, setCurrentTemperatureUnit] =
+    useState("celsius");
 
-  function toggleUnit() {
-    setCurrentTemperatureUnit((u) => (u === "F" ? "C" : "F"));
-  }
+  const handleToggleSwitchChange = () => {
+    setCurrentTemperatureUnit((prev) =>
+      prev === "celsius" ? "fahrenheit" : "celsius"
+    );
+  };
 
   return (
     <CurrentTemperatureUnitContext.Provider
-      value={{ currentTemperatureUnit, setCurrentTemperatureUnit, toggleUnit }}
+      value={{
+        currentTemperatureUnit,
+        handleToggleSwitchChange,
+      }}
     >
       {children}
     </CurrentTemperatureUnitContext.Provider>
   );
-}
+};
 
-export function useTemperatureUnit() {
-  const ctx = useContext(CurrentTemperatureUnitContext);
-  if (!ctx)
+export const useCurrentTemperatureUnit = () => {
+  const context = useContext(CurrentTemperatureUnitContext);
+  if (!context) {
     throw new Error(
-      "useTemperatureUnit must be used within CurrentTemperatureUnitProvider"
+      "useCurrentTemperatureUnit must be used within CurrentTemperatureUnitProvider"
     );
-  return ctx;
-}
-
-export default CurrentTemperatureUnitContext;
+  }
+  return context;
+};

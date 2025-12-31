@@ -4,6 +4,7 @@ import Main from "./Main";
 import Footer from "./Footer";
 import ModalWithForm from "./ModalWithForm";
 import ItemModal from "./ItemModal";
+import ClothesSection from "./ClothesSection";
 import { defaultClothingItems } from "../utils/defaultClothingItems";
 import { fetchWeather } from "../utils/weatherApi";
 import { API_KEY, DEFAULT_LAT, DEFAULT_LON } from "../utils/constants";
@@ -21,6 +22,7 @@ export default function App() {
     city: "",
     day: false,
     condition: undefined,
+    temperature: { F: undefined, C: undefined },
   });
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [weatherSource, setWeatherSource] = useState("");
@@ -39,6 +41,7 @@ export default function App() {
           city: res.city,
           day: res.day,
           condition: res.condition,
+          temperature: res.temperature,
         });
         setWeatherLoading(false);
         setWeatherSource(label);
@@ -50,6 +53,7 @@ export default function App() {
           city: "Sample City",
           day: undefined,
           condition: undefined,
+          temperature: { F: 72, C: 22 },
         });
         setWeatherLoading(false);
         setWeatherSource("fallback");
@@ -135,6 +139,7 @@ export default function App() {
           onAddClick={handleOpenAdd}
           location={weather?.city}
           onProfileClick={() => setActiveView("profile")}
+          weather={weather}
         />
 
         <div className="container">

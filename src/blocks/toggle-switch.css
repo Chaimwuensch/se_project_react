@@ -1,0 +1,57 @@
+.toggle-switch {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 56px;
+}
+.toggle-switch__label {
+  box-sizing: border-box;
+  height: 28px;
+  width: 56px;
+  background-color: #fff;
+  display: block;
+  border-radius: 20px;
+  position: relative;
+  border: 2px solid #000000;
+}
+
+.toggle-switch__input {
+  position: absolute;
+  height: 0;
+  width: 0;
+  overflow: hidden;
+}
+
+.toggle-switch__circle {
+  position: absolute;
+  top: 0;
+  left: -2px;
+  height: 26px;
+  width: 26px;
+  border-radius: 50%;
+  background-color: #000000;
+  transition: 0.25s ease-in-out;
+}
+
+.toggle-switch__value {
+  display: flex;
+  color: #fff;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  font-family: Cabinet Grotesk;
+  font-weight: 700;
+  font-size: 14px;
+  align-items: center;
+  justify-content: center;
+}
+.toggle-switch__value_left {
+  left: 5px;
+}
+.toggle-switch__value_right {
+  right: 5px;
+}
+.toggle-switch__input:checked ~ .toggle-switch__circle {
+  left: calc(56px - 26px - 2px);
+}

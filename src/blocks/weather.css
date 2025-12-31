@@ -33,11 +33,19 @@
   top: 22px;
   left: 16px;
 }
+
+.weather-unit {
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  position: absolute;
+  top: 22px;
+  left: 53px;
+}
 .weather-city {
   font-size: 13px;
   color: #fff;
 }
-
 @media (max-width: 520px) {
   .weather-card {
     padding: 12px;

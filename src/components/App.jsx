@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
@@ -26,7 +27,16 @@ export default function App() {
   });
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [weatherSource, setWeatherSource] = useState("");
-  const [activeView, setActiveView] = useState("home"); // 'home' | 'profile'
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // fake auth flag for now – replace with real login later
+
+  const navigate = useNavigate();
+
+  function ProtectedRoute({ children }) {
+    if (!isLoggedIn) {
+      return <Navigate to="/" replace />;
+    }
+    return children;
+  }
 
   // Load weather on mount — prefer user geolocation, fall back to default coords
   useEffect(() => {
@@ -131,33 +141,42 @@ export default function App() {
       setItems((prev) => prev.filter((it) => it._id !== id && it.id !== id));
     }
   }
-
   return (
     <CurrentTemperatureUnitProvider>
       <div className="app-root">
         <Header
           onAddClick={handleOpenAdd}
           location={weather?.city}
-          onProfileClick={() => setActiveView("profile")}
+          onProfileClick={() => navigate("/profile")}
           weather={weather}
         />
 
         <div className="container">
-          {activeView === "home" ? (
-            <Main
-              items={items}
-              onItemClick={handleOpenItem}
-              weather={weather}
-              weatherLoading={weatherLoading}
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Main
+                  items={items}
+                  onItemClick={handleOpenItem}
+                  weather={weather}
+                  weatherLoading={weatherLoading}
+                />
+              }
             />
-          ) : (
-            <Profile
-              items={items}
-              onBack={() => setActiveView("home")}
-              onItemClick={handleOpenItem}
-              onDelete={handleDeleteItem}
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ClothesSection
+                    items={items}
+                    onItemClick={handleOpenItem}
+                    onDelete={handleDeleteItem}
+                  />
+                </ProtectedRoute>
+              }
             />
-          )}
+          </Routes>
 
           <Footer />
         </div>

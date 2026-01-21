@@ -1,5 +1,5 @@
-import { useCurrentTemperatureUnit } from "../contexts/CurrentTemperatureUnitContext";
-
+import { useCurrentTemperatureUnit } from "../../contexts/CurrentTemperatureUnitContext";
+import "../ToggleSwitch/ToggleSwitch.css";
 const ToggleSwitch = () => {
   const { currentTemperatureUnit, handleToggleSwitchChange } =
     useCurrentTemperatureUnit();
@@ -17,11 +17,10 @@ const ToggleSwitch = () => {
         />
         <span className="toggle-switch__circle" />
         <span className="toggle-switch__value toggle-switch__value_left">
-          °F
-        </span>
-
-        <span className="toggle-switch__value toggle-switch__value_right">
           °C
+        </span>
+        <span className="toggle-switch__value toggle-switch__value_right">
+          °F
         </span>
       </label>
     </div>

@@ -1,8 +1,8 @@
 import React from "react";
-import { getWeatherCondition } from "../utils/weatherApi";
-import { weatherOptions } from "../utils/constants";
-import { useCurrentTemperatureUnit } from "../contexts/CurrentTemperatureUnitContext";
-import "../blocks/weather.css";
+import { getWeatherCondition } from "../../utils/weatherApi";
+import { weatherOptions } from "../../utils/constants";
+import { useCurrentTemperatureUnit } from "../../contexts/CurrentTemperatureUnitContext";
+import "../WeatherCard/WeatherCard.css";
 
 export default function WeatherCard({ weather, loading = false }) {
   const day = weather?.day;

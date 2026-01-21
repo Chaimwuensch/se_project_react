@@ -1,14 +1,11 @@
 import React from "react";
-import close from "../images/close.png";
+import close from "../../images/close.png";
 
-import "../blocks/modal.css";
+import "../ItemModal/ItemModal.css";
 
 export default function ItemModal({ item, onClose, isOpen = false }) {
   if (!isOpen) return null;
   if (!item) return null;
-
-  console.log(12312312312);
-  console.log(item);
 
   return (
     <div className={`modal item-modal modal_is-opened`}>

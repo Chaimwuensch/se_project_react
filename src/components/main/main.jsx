@@ -1,7 +1,8 @@
 import React from "react";
-import WeatherCard from "./WeatherCard";
-import ItemCard from "./ItemCard";
-import { getWeatherCondition } from "../utils/weatherApi";
+import WeatherCard from "../WeatherCard/WeatherCard";
+import ItemCard from "../ItemCard/ItemCard";
+import { getWeatherCondition } from "../../utils/weatherApi";
+import "./main.css";
 
 export default function Main({
   items = [],
@@ -17,7 +18,6 @@ export default function Main({
     const w = (it.weather || "").toString().toLowerCase();
     return w === condition;
   });
-
   return (
     <main className="main-content">
       <section className="weather-list">
@@ -30,7 +30,7 @@ export default function Main({
         ) : (
           <ul className="items-grid">
             {filtered.map((item) => (
-              <ItemCard key={item._id} item={item} onCardClick={onItemClick} />
+              <ItemCard key={item._id} card={item} onCardClick={onItemClick} />
             ))}
           </ul>
         )}

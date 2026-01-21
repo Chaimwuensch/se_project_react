@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import close from "../images/close.png";
+import close from "../../images/close.png";
+import "../ModalWithForm/ModalWithForm.css";
 
 export default function ModalWithForm({
   isOpen,
@@ -17,6 +18,13 @@ export default function ModalWithForm({
   }
 
   const containerClass = `modal ${isOpen ? "modal_is-opened" : ""}`;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    onSubmit(formData);
+  };
+
   return (
     <div className={containerClass} onMouseDown={handleOverlayClick}>
       <div className="modal__overlay">
@@ -31,7 +39,7 @@ export default function ModalWithForm({
           </button>
 
           <h2 className="modal-title">{title}</h2>
-          <form className="modal-form">
+          <form className="modal-form" onSubmit={handleSubmit}>
             {children}
             <button type="submit" className="modal-form__submit">
               Add garment

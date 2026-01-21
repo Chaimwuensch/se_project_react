@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import Header from "./Header";
-import Main from "./Main";
-import Footer from "./Footer";
-import ModalWithForm from "./ModalWithForm";
-import ItemModal from "./ItemModal";
-import ClothesSection from "./ClothesSection";
-import { defaultClothingItems } from "../utils/defaultClothingItems";
-import { fetchWeather } from "../utils/weatherApi";
-import { API_KEY, DEFAULT_LAT, DEFAULT_LON } from "../utils/constants";
+import { Routes, Route } from "react-router-dom";
+import Header from "../Header/Header";
+import Main from "../main/main";
+import Footer from "../Footer/Footer";
+import ModalWithForm from "../ModalWithForm/ModalWithForm";
+import ItemModal from "../ItemModal/ItemModal";
+import ClothesSection from "../ClothesSection/ClothesSection";
+import Profile from "../Profile/Profile";
+import { defaultClothingItems } from "../../utils/defaultClothingItems";
+import { fetchWeather } from "../../utils/weatherApi";
+import { API_KEY, DEFAULT_LAT, DEFAULT_LON } from "../../utils/constants";
 // App is the top-level wrapper for the whole application.
 // It holds global UI state (modals, selected item, collection data, etc.)
-import { CurrentTemperatureUnitProvider } from "../contexts/CurrentTemperatureUnitContext";
+import { CurrentTemperatureUnitProvider } from "../../contexts/CurrentTemperatureUnitContext";
+import { api } from "../../utils/api";
+import "./App.css";
 
 export default function App() {
   // Top-level UI state
-  const [activeModal, setActiveModal] = useState(""); // '', 'add', 'item'
+  const [activeModal, setActiveModal] = useState(null); // '', 'add', 'item'
   const [selectedCard, setSelectedCard] = useState(null);
-  const [items, setItems] = useState(defaultClothingItems);
+  const [items, setItems] = useState([]);
   const [weather, setWeather] = useState({
     temp: undefined,
     city: "",
@@ -28,16 +31,10 @@ export default function App() {
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [weatherSource, setWeatherSource] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(true); // fake auth flag for now – replace with real login later
-
-  const navigate = useNavigate();
-
-  function ProtectedRoute({ children }) {
-    if (!isLoggedIn) {
-      return <Navigate to="/" replace />;
-    }
-    return children;
-  }
-
+  const handleCardClick = (card) => {
+    setSelectedCard(card);
+    setActiveModal("preview");
+  };
   // Load weather on mount — prefer user geolocation, fall back to default coords
   useEffect(() => {
     let mounted = true;
@@ -56,7 +53,6 @@ export default function App() {
         setWeatherLoading(false);
         setWeatherSource(label);
       } catch (err) {
-        // if API call fails, fall back
         if (!mounted) return;
         setWeather({
           temp: 72,
@@ -72,8 +68,6 @@ export default function App() {
 
     async function init() {
       setWeatherLoading(true);
-
-      // Try browser geolocation first — this will trigger the permission prompt
       if (navigator?.geolocation) {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
@@ -82,24 +76,47 @@ export default function App() {
             const lon = position.coords.longitude;
             await loadUsingCoords(lat, lon, "geolocation");
           },
-          // on error (permission denied, timeout) fall back to defaults
           async () => {
             if (!mounted) return;
             await loadUsingCoords(DEFAULT_LAT, DEFAULT_LON, "fallback");
           },
-          { timeout: 7000 }
+          { timeout: 7000 },
         );
       } else {
-        // No geolocation support — use defaults
         await loadUsingCoords(DEFAULT_LAT, DEFAULT_LON, "fallback");
       }
     }
 
     init();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Load items on mount
+  useEffect(() => {
+    api
+      .getItems()
+      .then((items) => {
+        setItems(items);
+      })
+      .catch((err) => {
+        console.log(err);
+        console.error("Raw error:", err);
+        console.error("Error response:", err.response?.data);
+        console.error("Error message:", err.message);
+        setItems(defaultClothingItems);
+      });
   }, []);
 
   function handleOpenAdd() {
     setActiveModal("add");
+  }
+
+  function handleOpenItem(item) {
+    setSelectedCard(item);
+    setActiveModal("item");
   }
 
   function handleCloseModal() {
@@ -127,31 +144,49 @@ export default function App() {
   }
 
   async function handleAddItem(item) {
-    await api.createItem(item).then((res) => {
-      console.log(res);
-    });
+    try {
+      const itemData = {
+        name: item.name,
+        imageUrl:
+          item.imageUrl === "http://localhost:3000/src/images/profile.png"
+            ? "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Cap.png"
+            : item.imageUrl,
+        weather: item.weather.toLowerCase(),
+      };
+      console.log("Sending item data:", itemData);
+      const newItem = await api.createItem(itemData);
+      setItems((prev) => [...prev, newItem]);
+    } catch (err) {
+      console.error("Failed to add item:", err);
+      // Fallback: create local item
+      const localItem = {
+        _id: Date.now(),
+        name: item.name,
+        imageUrl: item.imageUrl,
+        weather: item.weather.toLowerCase(),
+      };
+      setItems((prev) => [...prev, localItem]);
+    }
   }
 
   async function handleDeleteItem(id) {
     try {
       await api.deleteItem(id);
-      setItems((prev) => prev.filter((it) => it._id !== id && it.id !== id));
+      setItems((prev) => prev.filter((it) => it.id !== id));
     } catch (e) {
       // fallback to local delete
-      setItems((prev) => prev.filter((it) => it._id !== id && it.id !== id));
+      setItems((prev) => prev.filter((it) => it.id !== id));
     }
   }
   return (
     <CurrentTemperatureUnitProvider>
-      <div className="app-root">
-        <Header
-          onAddClick={handleOpenAdd}
-          location={weather?.city}
-          onProfileClick={() => navigate("/profile")}
-          weather={weather}
-        />
-
-        <div className="container">
+      <div className="page">
+        <div className="page__wrapper">
+          <Header
+            handleAddClick={handleOpenAdd}
+            location={weather?.city}
+            weatherData={weather}
+          />
           <Routes>
             <Route
               path="/"
@@ -167,13 +202,13 @@ export default function App() {
             <Route
               path="/profile"
               element={
-                <ProtectedRoute>
-                  <ClothesSection
-                    items={items}
-                    onItemClick={handleOpenItem}
-                    onDelete={handleDeleteItem}
+                items.length !== 0 && (
+                  <Profile
+                    cards={items}
+                    onCardClick={handleCardClick}
+                    onAddNewClick={() => setActiveModal("create")}
                   />
-                </ProtectedRoute>
+                )
               }
             />
           </Routes>
@@ -190,7 +225,6 @@ export default function App() {
             handleAddItem(Object.fromEntries(formData));
           }}
         >
-          {" "}
           <>
             <div className="modal-form__label_container">
               <label className="modal-form__label">
@@ -225,6 +259,7 @@ export default function App() {
                   type="radio"
                   name="weather"
                   value="Hot"
+                  required
                 />
                 <span className="modal-form__radio-label">Hot</span>
               </label>

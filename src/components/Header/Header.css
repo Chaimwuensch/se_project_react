@@ -25,8 +25,8 @@
 }
 
 .header__logo {
-  height: 24px;
-  width: 88px;
+  height: 40px;
+  width: 89px;
   margin-bottom: 34px;
 }
 
@@ -40,6 +40,7 @@
 }
 
 .header__date {
+  margin: 11px 5px 24px 0;
   padding: 0;
   font-size: 20px;
   font-weight: 700;

@@ -4,7 +4,7 @@ import Header from "../Header/Header";
 import Main from "../main/main";
 import Footer from "../Footer/Footer";
 import ModalWithForm from "../ModalWithForm/ModalWithForm";
-import ItemModal from "../ItemModal/ItemModal";
+import ItemModal from "../AddItemModal/AddItemModal";
 import ClothesSection from "../ClothesSection/ClothesSection";
 import Profile from "../Profile/Profile";
 import { defaultClothingItems } from "../../utils/defaultClothingItems";

@@ -1,7 +1,7 @@
 import React from "react";
 import close from "../../images/close.png";
 
-import "../ItemModal/ItemModal.css";
+import "../AddItemModal/AddItemModal.css";
 
 export default function ItemModal({ item, onClose, isOpen = false }) {
   if (!isOpen) return null;

@@ -16,9 +16,22 @@ import { CurrentTemperatureUnitProvider } from "../../contexts/CurrentTemperatur
 import { api } from "../../utils/api";
 import "./App.css";
 
+function DeleteConfirmationModal({ isOpen, onClose, onConfirm, itemName }) {
+  if (!isOpen) return null;
+  return (
+    <div className="modal">
+      <div className="modal__content">
+        <p>Are you sure you want to delete "{itemName}"?</p>
+        <button onClick={onConfirm}>Delete</button>
+        <button onClick={onClose}>Cancel</button>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
-  // Top-level UI state
-  const [activeModal, setActiveModal] = useState(null); // '', 'add', 'item'
+  const [activeModal, setActiveModal] = useState("");
+  const [cardToDelete, setCardToDelete] = useState(null);
   const [selectedCard, setSelectedCard] = useState(null);
   const [items, setItems] = useState([]);
   const [weather, setWeather] = useState({
@@ -30,7 +43,8 @@ export default function App() {
   });
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [weatherSource, setWeatherSource] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // fake auth flag for now – replace with real login later
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+
   const handleCardClick = (card) => {
     setSelectedCard(card);
     setActiveModal("preview");
@@ -114,6 +128,11 @@ export default function App() {
     setActiveModal("add");
   }
 
+  const openConfirmationModal = (card) => {
+    setCardToDelete(card);
+    setActiveModal("delete-confirmation");
+  };
+
   function handleOpenItem(item) {
     setSelectedCard(item);
     setActiveModal("item");
@@ -138,10 +157,6 @@ export default function App() {
       document.removeEventListener("keydown", handleEscClose);
     };
   }, [activeModal]);
-  function handleOpenItem(item) {
-    setSelectedCard(item);
-    setActiveModal("item");
-  }
 
   async function handleAddItem(item) {
     try {
@@ -169,15 +184,26 @@ export default function App() {
     }
   }
 
-  async function handleDeleteItem(id) {
-    try {
-      await api.deleteItem(id);
-      setItems((prev) => prev.filter((it) => it.id !== id));
-    } catch (e) {
-      // fallback to local delete
-      setItems((prev) => prev.filter((it) => it.id !== id));
-    }
-  }
+  // Handles the actual deletion after confirmation
+  const handleCardDelete = () => {
+    api
+      .deleteItem(cardToDelete._id)
+      .then(() => {
+        // Filter out deleted card
+        setItems((prevItems) =>
+          prevItems.filter((item) => item._id !== cardToDelete._id),
+        );
+        // Close all modals and reset state
+        closeActiveModal();
+        setCardToDelete(null);
+      })
+      .catch((err) => console.error("Error deleting item:", err));
+  };
+
+  const closeActiveModal = () => {
+    setActiveModal("");
+  };
+
   return (
     <CurrentTemperatureUnitProvider>
       <div className="page">
@@ -287,9 +313,19 @@ export default function App() {
         </ModalWithForm>
 
         <ItemModal
+          activeModal={activeModal}
+          card={selectedCard}
+          onDeleteClick={openConfirmationModal}
           item={selectedCard}
           onClose={handleCloseModal}
           isOpen={activeModal === "item"}
+        />
+
+        <DeleteConfirmationModal
+          isOpen={activeModal === "delete-confirmation"}
+          onClose={closeActiveModal}
+          onConfirm={handleCardDelete}
+          itemName={cardToDelete?.name}
         />
       </div>
     </CurrentTemperatureUnitProvider>

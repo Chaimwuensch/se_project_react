@@ -18,16 +18,17 @@ export default class Api {
   }
 
   getItems() {
+    console.log("Items URL:", `${this._baseUrl}/items`);
     return fetch(`${this._baseUrl}/items`, {
       method: "GET",
     }).then(this._checkResponse);
   }
 
-  createItem(item) {
+  createItem({ name, weather, imageUrl }) {
     return fetch(`${this._baseUrl}/items`, {
       method: "POST",
       headers: this._headers,
-      body: JSON.stringify(item),
+      body: JSON.stringify({ name, weather, imageUrl }),
     }).then(this._checkResponse);
   }
 

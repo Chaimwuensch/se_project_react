@@ -3,10 +3,19 @@ import close from "../../images/close.png";
 
 import "../AddItemModal/AddItemModal.css";
 
-export default function ItemModal({ item, onClose, isOpen = false }) {
+export default function ItemModal({
+  activeModal,
+  card,
+  onDelete,
+  item,
+  onClose,
+  isOpen = false,
+}) {
   if (!isOpen) return null;
   if (!item) return null;
-
+  const handleDelete = () => {
+    onDelete(card);
+  };
   return (
     <div className={`modal item-modal modal_is-opened`}>
       <div className="modal__overlay">
@@ -19,12 +28,19 @@ export default function ItemModal({ item, onClose, isOpen = false }) {
           >
             <img src={close} alt="Close" />
           </button>
-          {item.link && (
-            <img src={item.link} alt={item.name} className="modal__image" />
+          {item.imageUrl && (
+            <img src={item.imageUrl} alt={item.name} className="modal__image" />
           )}
 
           <h2 className="modal-title">{item.name || "Item"}</h2>
           <h3 className="modal-condition">{`Weather: ${item.weather}`}</h3>
+          <button
+            className="modal__delete-button"
+            type="button"
+            onClick={handleDelete}
+          >
+            Delete item
+          </button>
         </div>
       </div>
     </div>

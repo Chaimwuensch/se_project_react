@@ -1,7 +1,7 @@
 import React from "react";
 import close from "../../images/close.png";
 
-export default function ItemModal({
+export default function AddItemModal({
   activeModal,
   card,
   onDeleteClick,

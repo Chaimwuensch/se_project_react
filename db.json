@@ -119,6 +119,12 @@
       "weather": "hot",
       "imageUrl": "http://localhost:3000/src/images/profile.png",
       "id": 21
+    },
+    {
+      "name": "rbf4iufu4t",
+      "weather": "warm",
+      "imageUrl": "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Scarf.png?etag=74efbee93810c926b5507e862c6cb76c",
+      "id": 22
     }
   ]
 }

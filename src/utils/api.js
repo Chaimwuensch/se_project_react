@@ -54,7 +54,7 @@ export default class Api {
 
 // Create an instance of the API
 const api = new Api({
-  baseUrl: "http://localhost:5000",
+  baseUrl: "http://localhost:3001",
   headers: {
     "Content-Type": "application/json",
   },

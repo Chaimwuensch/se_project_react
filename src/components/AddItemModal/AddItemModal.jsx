@@ -1,8 +1,6 @@
 import React from "react";
 import close from "../../images/close.png";
 
-import "../AddItemModal/AddItemModal.css";
-
 export default function ItemModal({
   activeModal,
   card,

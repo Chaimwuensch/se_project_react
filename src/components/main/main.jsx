@@ -18,6 +18,10 @@ export default function Main({
     const w = (it.weather || "").toString().toLowerCase();
     return w === condition;
   });
+
+  console.log("Total items:", items.length);
+  console.log("Current weather condition:", condition);
+  console.log("Filtered items:", filtered.length);
   return (
     <main className="main-content">
       <section className="weather-list">
@@ -30,7 +34,7 @@ export default function Main({
         ) : (
           <ul className="items-grid">
             {filtered.map((item) => (
-              <ItemCard key={item._id} card={item} onCardClick={onItemClick} />
+              <ItemCard key={item.id} card={item} onCardClick={onItemClick} />
             ))}
           </ul>
         )}

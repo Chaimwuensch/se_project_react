@@ -21,7 +21,10 @@ export default class Api {
     console.log("Items URL:", `${this._baseUrl}/items`);
     return fetch(`${this._baseUrl}/items`, {
       method: "GET",
-    }).then(this._checkResponse);
+    }).then((res) => {
+      console.log("Items fetched successfully");
+      return this._checkResponse(res);
+    });
   }
 
   createItem({ name, weather, imageUrl }) {
@@ -29,11 +32,21 @@ export default class Api {
       method: "POST",
       headers: this._headers,
       body: JSON.stringify({ name, weather, imageUrl }),
-    }).then(this._checkResponse);
+    })
+      .then((res) => {
+        console.log("Create response status:", res.status);
+        return this._checkResponse(res);
+      })
+      .then((newItem) => {
+        console.log("Item created successfully:", newItem);
+        return newItem;
+      });
   }
 
   deleteItem(id) {
-    return fetch(`${this._baseUrl}/items/${id}`, {
+    const url = `${this._baseUrl}/items/${id}`;
+    console.log("DELETE URL:", url);
+    return fetch(url, {
       method: "DELETE",
     }).then(this._checkResponse);
   }
@@ -41,7 +54,7 @@ export default class Api {
 
 // Create an instance of the API
 const api = new Api({
-  baseUrl: "http://localhost:3001",
+  baseUrl: "http://localhost:5000",
   headers: {
     "Content-Type": "application/json",
   },

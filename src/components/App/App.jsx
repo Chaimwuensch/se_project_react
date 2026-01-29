@@ -19,11 +19,25 @@ import "./App.css";
 function DeleteConfirmationModal({ isOpen, onClose, onConfirm, itemName }) {
   if (!isOpen) return null;
   return (
-    <div className="modal">
-      <div className="modal__content">
-        <p>Are you sure you want to delete "{itemName}"?</p>
-        <button onClick={onConfirm}>Delete</button>
-        <button onClick={onClose}>Cancel</button>
+    <div className={`modal ${isOpen ? "modal_is-opened" : ""}`}>
+      <div className="modal__overlay">
+        <div className="modal__content">
+          <p>Are you sure you want to delete "{itemName}"?</p>
+          <div className="modal__buttons">
+            <button
+              className="modal__button modal__button_type_delete"
+              onClick={onConfirm}
+            >
+              Delete
+            </button>
+            <button
+              className="modal__button modal__button_type_cancel"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -162,20 +176,23 @@ export default function App() {
     try {
       const itemData = {
         name: item.name,
-        imageUrl:
-          item.imageUrl === "http://localhost:3000/src/images/profile.png"
-            ? "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Cap.png"
-            : item.imageUrl,
+        imageUrl: item.imageUrl,
         weather: item.weather.toLowerCase(),
       };
       console.log("Sending item data:", itemData);
       const newItem = await api.createItem(itemData);
-      setItems((prev) => [...prev, newItem]);
+      console.log("Adding item to state:", newItem);
+      setItems((prev) => {
+        const updated = [...prev, newItem];
+        console.log("Updated items array:", updated);
+        return updated;
+      });
+      handleCloseModal();
     } catch (err) {
       console.error("Failed to add item:", err);
       // Fallback: create local item
       const localItem = {
-        _id: Date.now(),
+        id: Date.now(),
         name: item.name,
         imageUrl: item.imageUrl,
         weather: item.weather.toLowerCase(),
@@ -186,12 +203,13 @@ export default function App() {
 
   // Handles the actual deletion after confirmation
   const handleCardDelete = () => {
+    console.log("Attempting to delete item with ID:", cardToDelete.id);
     api
-      .deleteItem(cardToDelete._id)
+      .deleteItem(cardToDelete.id)
       .then(() => {
         // Filter out deleted card
         setItems((prevItems) =>
-          prevItems.filter((item) => item._id !== cardToDelete._id),
+          prevItems.filter((item) => item.id !== cardToDelete.id),
         );
         // Close all modals and reset state
         closeActiveModal();

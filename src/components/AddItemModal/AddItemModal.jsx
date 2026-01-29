@@ -6,7 +6,7 @@ import "../AddItemModal/AddItemModal.css";
 export default function ItemModal({
   activeModal,
   card,
-  onDelete,
+  onDeleteClick,
   item,
   onClose,
   isOpen = false,
@@ -14,7 +14,7 @@ export default function ItemModal({
   if (!isOpen) return null;
   if (!item) return null;
   const handleDelete = () => {
-    onDelete(card);
+    onDeleteClick(card);
   };
   return (
     <div className={`modal item-modal modal_is-opened`}>

@@ -1,46 +1,78 @@
-import React from "react";
-import close from "../../images/close.png";
-
+import ModalWithForm from "../ModalWithForm/ModalWithForm";
 export default function AddItemModal({
   activeModal,
-  card,
-  onDeleteClick,
-  item,
-  onClose,
-  isOpen = false,
+  handleCloseModal,
+  handleAddItem,
 }) {
-  if (!isOpen) return null;
-  if (!item) return null;
-  const handleDelete = () => {
-    onDeleteClick(card);
-  };
   return (
-    <div className={`modal item-modal modal_is-opened`}>
-      <div className="modal__overlay">
-        <div className="modal-content">
-          <button
-            type="button"
-            className="modal-close"
-            aria-label="Close"
-            onClick={onClose}
-          >
-            <img src={close} alt="Close" />
-          </button>
-          {item.imageUrl && (
-            <img src={item.imageUrl} alt={item.name} className="modal__image" />
-          )}
+    <ModalWithForm
+      isOpen={activeModal === "add"}
+      name="add-clothes"
+      title="New garment"
+      onClose={handleCloseModal}
+      onSubmit={(formData) => {
+        handleAddItem(Object.fromEntries(formData));
+      }}
+    >
+      <>
+        <div className="modal-form__label_container">
+          <label className="modal-form__label">
+            Name
+            <input
+              name="name"
+              type="text"
+              className="modal-form__input"
+              placeholder="Name"
+              required
+            />
+          </label>
 
-          <h2 className="modal-title">{item.name || "Item"}</h2>
-          <h3 className="modal-condition">{`Weather: ${item.weather}`}</h3>
-          <button
-            className="modal__delete-button"
-            type="button"
-            onClick={handleDelete}
-          >
-            Delete item
-          </button>
+          <label className="modal-form__label">
+            Image
+            <input
+              name="imageUrl"
+              type="url"
+              className="modal-form__input"
+              placeholder="Image URL"
+              required
+            />
+          </label>
         </div>
-      </div>
-    </div>
+        <fieldset className="modal-form__fieldset">
+          <legend className="modal-form__legend">
+            Select the weather type:
+          </legend>
+          <label className="modal-form__radio-label-wrapper">
+            <input
+              className="modal-form__radio-input"
+              type="radio"
+              name="weather"
+              value="Hot"
+              required
+            />
+            <span className="modal-form__radio-label">Hot</span>
+          </label>
+
+          <label className="modal-form__radio-label-wrapper">
+            <input
+              className="modal-form__radio-input"
+              type="radio"
+              name="weather"
+              value="Warm"
+            />
+            <span className="modal-form__radio-label">Warm</span>
+          </label>
+          <label className="modal-form__radio-label-wrapper">
+            <input
+              className="modal-form__radio-input"
+              type="radio"
+              name="weather"
+              value="Cold"
+            />
+            <span className="modal-form__radio-label">Cold</span>
+          </label>
+        </fieldset>
+      </>
+    </ModalWithForm>
   );
 }

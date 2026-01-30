@@ -20,8 +20,8 @@ function DeleteConfirmationModal({ isOpen, onClose, onConfirm, itemName }) {
   if (!isOpen) return null;
   return (
     <div className={`modal ${isOpen ? "modal_is-opened" : ""}`}>
-      <div className="modal__overlay">
-        <div className="modal-content">
+      <div className="modal__overlay" onClick={onClose}>
+        <div className="modal__content" onClick={(e) => e.stopPropagation()}>
           <p>Are you sure you want to delete "{itemName}"?</p>
           <div className="modal__buttons">
             <button

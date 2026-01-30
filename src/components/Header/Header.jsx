@@ -5,7 +5,7 @@ import "./Navigation.css";
 import logoPath from "../../images/logo.png";
 import avatarDefault from "../../images/userAvatar.png";
 
-const Header = ({ weatherData, handleAddClick, passed_username }) => {
+const Header = ({ weatherData, handleAddClick, username }) => {
   if (!weatherData) return null;
   const currentDate = new Date().toLocaleString("default", {
     month: "long",

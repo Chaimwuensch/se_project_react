@@ -21,7 +21,7 @@ function DeleteConfirmationModal({ isOpen, onClose, onConfirm, itemName }) {
   return (
     <div className={`modal ${isOpen ? "modal_is-opened" : ""}`}>
       <div className="modal__overlay">
-        <div className="modal__content">
+        <div className="modal-content">
           <p>Are you sure you want to delete "{itemName}"?</p>
           <div className="modal__buttons">
             <button
@@ -61,7 +61,7 @@ export default function App() {
 
   const handleCardClick = (card) => {
     setSelectedCard(card);
-    setActiveModal("preview");
+    setActiveModal("item"); // use "item" (matches ItemModal)
   };
   // Load weather on mount — prefer user geolocation, fall back to default coords
   useEffect(() => {
@@ -127,14 +127,21 @@ export default function App() {
     api
       .getItems()
       .then((items) => {
-        setItems(items);
+        const normalized = items.map((it) => ({
+          ...it,
+          id: it.id || it._id,
+          imageUrl: it.imageUrl || it.link,
+          weather: (it.weather || "").toLowerCase(),
+        }));
+        setItems(normalized);
       })
       .catch((err) => {
-        console.log(err);
-        console.error("Raw error:", err);
-        console.error("Error response:", err.response?.data);
-        console.error("Error message:", err.message);
-        setItems(defaultClothingItems);
+        const normalized = defaultClothingItems.map((it) => ({
+          ...it,
+          imageUrl: it.imageUrl || it.link,
+          weather: (it.weather || "").toLowerCase(),
+        }));
+        setItems(normalized);
       });
   }, []);
 
@@ -179,17 +186,15 @@ export default function App() {
         imageUrl: item.imageUrl,
         weather: item.weather.toLowerCase(),
       };
-      console.log("Sending item data:", itemData);
       const newItem = await api.createItem(itemData);
-      console.log("Adding item to state:", newItem);
-      setItems((prev) => {
-        const updated = [...prev, newItem];
-        console.log("Updated items array:", updated);
-        return updated;
-      });
+      const normalizedNew = {
+        ...newItem,
+        id: newItem.id || newItem._id,
+        imageUrl: newItem.imageUrl || newItem.link,
+      };
+      setItems((prev) => [...prev, normalizedNew]);
       handleCloseModal();
     } catch (err) {
-      console.error("Failed to add item:", err);
       // Fallback: create local item
       const localItem = {
         id: Date.now(),
@@ -203,13 +208,13 @@ export default function App() {
 
   // Handles the actual deletion after confirmation
   const handleCardDelete = () => {
-    console.log("Attempting to delete item with ID:", cardToDelete.id);
+    const idToDelete = cardToDelete.id || cardToDelete._id;
     api
-      .deleteItem(cardToDelete.id)
+      .deleteItem(idToDelete)
       .then(() => {
         // Filter out deleted card
         setItems((prevItems) =>
-          prevItems.filter((item) => item.id !== cardToDelete.id),
+          prevItems.filter((item) => (item.id || item._id) !== idToDelete),
         );
         // Close all modals and reset state
         closeActiveModal();
@@ -246,13 +251,11 @@ export default function App() {
             <Route
               path="/profile"
               element={
-                items.length !== 0 && (
-                  <Profile
-                    cards={items}
-                    onCardClick={handleCardClick}
-                    onAddNewClick={() => setActiveModal("create")}
-                  />
-                )
+                <Profile
+                  cards={items}
+                  onCardClick={handleCardClick}
+                  onAddNewClick={() => setActiveModal("add")}
+                />
               }
             />
           </Routes>

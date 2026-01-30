@@ -76,8 +76,8 @@
 }
 
 .modal-form__label {
-  width: 440;
-  height: 52;
+  width: 440px;
+  height: 52px;
   font-family: Cabinet Grotesk;
   font-weight: 700;
   font-style: Bold;
@@ -160,7 +160,7 @@
   opacity: 1;
 }
 
-.input[type="radio"] {
+.modal-form__radio-input[type="radio"] {
   width: 16px;
   height: 16px;
 }

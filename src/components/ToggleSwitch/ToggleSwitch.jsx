@@ -1,9 +1,30 @@
-import { useCurrentTemperatureUnit } from "../../contexts/CurrentTemperatureUnitContext";
-import "../ToggleSwitch/ToggleSwitch.css";
+import { useState, useContext, useEffect } from "react";
+import "./ToggleSwitch.css";
+import {CurrentTemperatureUnitContext} from "../../contexts/CurrentTemperatureUnitContext";
+
 const ToggleSwitch = () => {
-  const { currentTemperatureUnit, handleToggleSwitchChange } =
-    useCurrentTemperatureUnit();
-  const isChecked = currentTemperatureUnit === "fahrenheit";
+  const { currentTemperatureUnit, handleToggleSwitchChange } = useContext(
+    CurrentTemperatureUnitContext
+  );
+  
+  const [isChecked, setIsChecked] = useState(currentTemperatureUnit === "C");
+
+  useEffect(() => {
+    setIsChecked(currentTemperatureUnit === "C");
+  }, [currentTemperatureUnit]);
+
+  const handleChange = () => {
+    const newValue = !isChecked;
+    const newUnit = newValue ? "C" : "F";
+    
+    console.log("Toggle changing to:", newUnit);
+    
+    // Update local state (makes switch move)
+    setIsChecked(newValue);
+    
+    // Update context (updates cards)
+    handleToggleSwitchChange(newUnit);
+  };
 
   return (
     <div className="toggle-switch">
@@ -12,18 +33,19 @@ const ToggleSwitch = () => {
           className="toggle-switch__input"
           type="checkbox"
           name="toggle-switch-checkbox"
-          onChange={handleToggleSwitchChange}
           checked={isChecked}
+          onChange={handleChange}
         />
         <span className="toggle-switch__circle" />
         <span className="toggle-switch__value toggle-switch__value_left">
-          °C
+          F
         </span>
         <span className="toggle-switch__value toggle-switch__value_right">
-          °F
+          C
         </span>
       </label>
     </div>
   );
 };
+
 export default ToggleSwitch;

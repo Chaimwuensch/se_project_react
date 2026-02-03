@@ -33,10 +33,10 @@ const Header = ({ weatherData, handleAddClick, username, avatar }) => {
           <li>
             <Link to="/profile" className="navigation__link">
               {username}
-              {avatar ? (
+              {avatarDefault ? (
                 <img
                   className="navigation__user"
-                  src={avatar || avatarDefault}
+                  src={avatarDefault}
                   alt="user avatar"
                 />
               ) : (

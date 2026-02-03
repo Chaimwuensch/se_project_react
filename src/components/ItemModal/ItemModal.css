@@ -30,11 +30,8 @@
   background: transparent;
   border: none;
   color: #ff4d00;
-  margin: -55px 0 20px 300px;
-  line-height: 20px;
-  font-family: Cabinet Grotesk;
-  font-weight: 700;
-  font-size: 20px;
+  margin-right: 32px;
+ line-height: 24px;
 }
 
 .modal__delete-button:hover {

@@ -29,16 +29,19 @@ export default function ItemModal({
           {item.imageUrl && (
             <img src={item.imageUrl} alt={item.name} className="modal__image" />
           )}
+          <div className="modal__footer-container">
+            {" "}
+            <h2 className="modal-title">{item.name || "Item"}</h2>{" "}
+            <button
+              className="modal__delete-button"
+              type="button"
+              onClick={handleDelete}
+            >
+              Delete item
+            </button>
+          </div>
 
-          <h2 className="modal-title">{item.name || "Item"}</h2>
           <h3 className="modal-condition">{`Weather: ${item.weather}`}</h3>
-          <button
-            className="modal__delete-button"
-            type="button"
-            onClick={handleDelete}
-          >
-            Delete item
-          </button>
         </div>
       </div>
     </div>

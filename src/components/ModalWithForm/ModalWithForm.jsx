@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import close from "../../images/close.png";
 import "../ModalWithForm/ModalWithForm.css";
 
@@ -12,23 +12,17 @@ export default function ModalWithForm({
   children,
 }) {
   function handleOverlayClick(e) {
-    if (e.target.classList.contains("modal")) {
+    if (e.target.classList.contains("modal__overlay")) {
       onClose && onClose();
     }
   }
 
   const containerClass = `modal ${isOpen ? "modal_is-opened" : ""}`;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    onSubmit(formData);
-  };
-
   return (
-    <div className={containerClass} onMouseDown={handleOverlayClick}>
-      <div className="modal__overlay">
-        <div className="modal-content">
+    <div className={containerClass}>
+      <div className="modal__overlay" onClick={handleOverlayClick}>
+        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
           <button
             type="button"
             className="modal-close"
@@ -39,10 +33,10 @@ export default function ModalWithForm({
           </button>
 
           <h2 className="modal-title">{title}</h2>
-          <form className="modal-form" onSubmit={handleSubmit}>
+          <form className="modal-form" onSubmit={onSubmit}>
             {children}
             <button type="submit" className="modal-form__submit">
-              Add garment
+              {buttonText}
             </button>
           </form>
         </div>

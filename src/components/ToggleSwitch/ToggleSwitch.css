@@ -1,3 +1,4 @@
+/* Reset and container */
 .toggle-switch {
   box-sizing: border-box;
   margin: 0;
@@ -5,53 +6,86 @@
   width: 100%;
   max-width: 56px;
 }
+
+/* Main label/container */
 .toggle-switch__label {
+  display: block;
   box-sizing: border-box;
+  position: relative;
   height: 28px;
   width: 56px;
-  background-color: #fff;
-  display: block;
+  background: white;
+  border: 2px solid #7e7e7e;
   border-radius: 20px;
-  position: relative;
-  border: 2px solid #000000;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
 
+/* Hide the actual checkbox */
 .toggle-switch__input {
   position: absolute;
-  height: 0;
   width: 0;
-  overflow: hidden;
+  height: 0;
+  opacity: 0;
+  cursor: pointer;
 }
 
+/* The animated circle */
 .toggle-switch__circle {
   position: absolute;
-  top: 0;
+  top: -2px;
   left: -2px;
-  height: 26px;
-  width: 26px;
+  height: 28px;
+  width: 28px;
   border-radius: 50%;
-  background-color: #000000;
-  transition: 0.25s ease-in-out;
+  background-color: black;
+  transition: all 0.3s ease-in-out;
+  pointer-events: none;
 }
 
+/* Text values */
 .toggle-switch__value {
-  display: flex;
-  color: #fff;
+  user-select: none;
+  color: #7e7e7e;
+  mix-blend-mode: difference;
   position: absolute;
   top: 0;
   bottom: 0;
-  font-family: Cabinet Grotesk;
+  width: 24px;
+  font-family: "CabinetGrotesk-Bold", sans-serif;
   font-weight: 700;
   font-size: 14px;
+  line-height: 1.24;
+  display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease-in-out;
+  pointer-events: none;
 }
+
 .toggle-switch__value_left {
-  left: 5px;
+  left: 0;
 }
+
 .toggle-switch__value_right {
-  right: 5px;
+  right: 0;
 }
+
+/* Hover states */
+.toggle-switch__label:hover {
+  border-color: black;
+}
+
+.toggle-switch__label:hover .toggle-switch__value {
+  color: white;
+}
+
+/* UNCHECKED STATE - Circle at position "F" (left) */
+.toggle-switch__input:not(:checked) ~ .toggle-switch__circle {
+  left: -2px;
+}
+
+/* CHECKED STATE - Circle at position "C" (right) */
 .toggle-switch__input:checked ~ .toggle-switch__circle {
-  left: calc(56px - 26px - 2px);
+  left: 26px;
 }

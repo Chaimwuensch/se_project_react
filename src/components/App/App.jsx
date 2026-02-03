@@ -10,8 +10,6 @@ import Profile from "../Profile/Profile";
 import { defaultClothingItems } from "../../utils/defaultClothingItems";
 import { fetchWeather } from "../../utils/weatherApi";
 import { API_KEY, DEFAULT_LAT, DEFAULT_LON } from "../../utils/constants";
-// App is the top-level wrapper for the whole application.
-// It holds global UI state (modals, selected item, collection data, etc.)
 import { CurrentTemperatureUnitProvider } from "../../contexts/CurrentTemperatureUnitContext";
 import { api } from "../../utils/api";
 import "./App.css";
@@ -22,13 +20,13 @@ function DeleteConfirmationModal({ isOpen, onClose, onConfirm, itemName }) {
     <div className={`modal ${isOpen ? "modal_is-opened" : ""}`}>
       <div className="modal__overlay" onClick={onClose}>
         <div className="modal__content" onClick={(e) => e.stopPropagation()}>
-          <p>Are you sure you want to delete "{itemName}"?</p>
+          <p>Are you sure you want to delete this item? This action is irreversible.</p>
           <div className="modal__buttons">
             <button
               className="modal__button modal__button_type_delete"
               onClick={onConfirm}
             >
-              Delete
+              Yes, delete item
             </button>
             <button
               className="modal__button modal__button_type_cancel"
@@ -61,9 +59,9 @@ export default function App() {
 
   const handleCardClick = (card) => {
     setSelectedCard(card);
-    setActiveModal("item"); // use "item" (matches ItemModal)
+    setActiveModal("item");
   };
-  // Load weather on mount — prefer user geolocation, fall back to default coords
+
   useEffect(() => {
     let mounted = true;
 
@@ -108,7 +106,7 @@ export default function App() {
             if (!mounted) return;
             await loadUsingCoords(DEFAULT_LAT, DEFAULT_LON, "fallback");
           },
-          { timeout: 7000 },
+          { timeout: 7000 }
         );
       } else {
         await loadUsingCoords(DEFAULT_LAT, DEFAULT_LON, "fallback");
@@ -122,7 +120,6 @@ export default function App() {
     };
   }, []);
 
-  // Load items on mount
   useEffect(() => {
     api
       .getItems()
@@ -149,8 +146,8 @@ export default function App() {
     setActiveModal("add");
   }
 
-  const openConfirmationModal = (card) => {
-    setCardToDelete(card);
+  const openConfirmationModal = () => {
+    setCardToDelete(selectedCard);
     setActiveModal("delete-confirmation");
   };
 
@@ -162,6 +159,7 @@ export default function App() {
   function handleCloseModal() {
     setActiveModal("");
     setSelectedCard(null);
+    setCardToDelete(null);
   }
 
   useEffect(() => {
@@ -179,7 +177,7 @@ export default function App() {
     };
   }, [activeModal]);
 
-  async function handleAddItem(item) {
+  async function handleAddItem(item, resetForm) {
     try {
       const itemData = {
         name: item.name,
@@ -192,39 +190,33 @@ export default function App() {
         id: newItem.id || newItem._id,
         imageUrl: newItem.imageUrl || newItem.link,
       };
-      setItems((prev) => [...prev, normalizedNew]);
+      setItems((prev) => [normalizedNew, ...prev]);
+      resetForm();
       handleCloseModal();
     } catch (err) {
-      // Fallback: create local item
       const localItem = {
         id: Date.now(),
         name: item.name,
         imageUrl: item.imageUrl,
         weather: item.weather.toLowerCase(),
       };
-      setItems((prev) => [...prev, localItem]);
+      setItems((prev) => [localItem, ...prev]);
+      resetForm();
+      handleCloseModal();
     }
   }
 
-  // Handles the actual deletion after confirmation
   const handleCardDelete = () => {
     const idToDelete = cardToDelete.id || cardToDelete._id;
     api
       .deleteItem(idToDelete)
       .then(() => {
-        // Filter out deleted card
         setItems((prevItems) =>
-          prevItems.filter((item) => (item.id || item._id) !== idToDelete),
+          prevItems.filter((item) => (item.id || item._id) !== idToDelete)
         );
-        // Close all modals and reset state
-        closeActiveModal();
-        setCardToDelete(null);
+        handleCloseModal();
       })
       .catch((err) => console.error("Error deleting item:", err));
-  };
-
-  const closeActiveModal = () => {
-    setActiveModal("");
   };
 
   return (
@@ -278,7 +270,7 @@ export default function App() {
         />
         <DeleteConfirmationModal
           isOpen={activeModal === "delete-confirmation"}
-          onClose={closeActiveModal}
+          onClose={handleCloseModal}
           onConfirm={handleCardDelete}
           itemName={cardToDelete?.name}
         />

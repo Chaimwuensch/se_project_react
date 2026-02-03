@@ -1,2 +1,2 @@
-@import url("https://fonts.cdnfonts.com/css/cabinet-grotesk");
+@import url("./vendor/fonts/fonts.css"); /* Custom font faces for the project */
 @import url("./vendor/normalize.css"); /* Basic resets helpful for the project */

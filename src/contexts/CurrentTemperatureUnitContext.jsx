@@ -1,24 +1,18 @@
-// src/contexts/CurrentTemperatureUnitContext.js
 import { createContext, useContext, useState } from "react";
 
-const CurrentTemperatureUnitContext = createContext();
+export const CurrentTemperatureUnitContext = createContext();
 
 export const CurrentTemperatureUnitProvider = ({ children }) => {
-  const [currentTemperatureUnit, setCurrentTemperatureUnit] =
-    useState("celsius");
+  const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState("F");
 
-  const handleToggleSwitchChange = () => {
-    setCurrentTemperatureUnit((prev) =>
-      prev === "celsius" ? "fahrenheit" : "celsius"
-    );
+  const handleToggleSwitchChange = (newUnit) => {
+    console.log("Context updating to:", newUnit);
+    setCurrentTemperatureUnit(newUnit);
   };
 
   return (
     <CurrentTemperatureUnitContext.Provider
-      value={{
-        currentTemperatureUnit,
-        handleToggleSwitchChange,
-      }}
+      value={{ currentTemperatureUnit, handleToggleSwitchChange }}
     >
       {children}
     </CurrentTemperatureUnitContext.Provider>

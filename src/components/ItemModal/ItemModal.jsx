@@ -1,5 +1,5 @@
 import React from "react";
-import close from "../../images/close.png";
+import close from "../../images/close-white.svg";
 import "../ItemModal/ItemModal.css";
 export default function ItemModal({
   activeModal,

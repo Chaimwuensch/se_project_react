@@ -1,6 +1,6 @@
 # WTWR — What To Wear (Frontend)
 
-**Backend Repository:** [se_project_express](https://github.com/YOUR_USERNAME/se_project_express)
+**Backend Repository:** [se_project_express](https://github.com/Chaimwuensch/se_project_express.git)
 
 This repository contains the frontend for the "WTWR" project used in Sprint 10.
 

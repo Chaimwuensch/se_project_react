@@ -1,30 +1,23 @@
-import React from "react";
 import { getWeatherCondition } from "../../utils/weatherApi";
 import { weatherOptions } from "../../utils/constants";
 import { useCurrentTemperatureUnit } from "../../contexts/CurrentTemperatureUnitContext";
 import "../WeatherCard/WeatherCard.css";
 
-
-export default function WeatherCard({ weather, loading = false }) {
+export default function WeatherCard({ weather }) {
   const day = weather?.day;
-  const temp = weather?.temp;
   const condition = weather?.condition;
   const { currentTemperatureUnit } = useCurrentTemperatureUnit();
   const unit = currentTemperatureUnit === "F" ? "°F" : "°C";
   const tempData = weather?.temperature || {};
-  const displayTemp =
-    tempData[currentTemperatureUnit === "F" ? "F" : "C"];
+  const displayTemp = tempData[currentTemperatureUnit === "F" ? "F" : "C"];
   const weatherOption = weatherOptions.filter((option) => {
     return option.day === day && option.condition === condition;
   });
 
-
-const weatherCondition = getWeatherCondition(displayTemp);
-;
+  const weatherCondition = getWeatherCondition(displayTemp);
   const cardClass = `weather-card weather-card--${
     weatherCondition || "Loading..."
   }`;
-
 
   return (
     <div className={cardClass}>

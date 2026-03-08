@@ -1,5 +1,5 @@
 // Small wrapper around OpenWeather calls and weather condition helper
-import { API_KEY } from "./constants";
+
 const isDay = ({ sunrise, sunset }, now) => {
   return sunrise * 1000 < now && now < sunset * 1000;
 };

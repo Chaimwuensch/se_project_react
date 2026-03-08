@@ -1,11 +1,12 @@
+import { useCurrentUser } from "../../contexts/CurrentUserContext";
 import "./Profile.css";
 import SideBar from "../SideBar/SideBar";
 import ClothesSection from "../ClothesSection/ClothesSection";
 
-const Profile = ({ cards, onCardClick, onCardDelete, onAddNewClick }) => {
-  console.log("Profile component rendered with props:", {
-    cards,
-  });
+const Profile = ({ cards, onCardClick, onAddNewClick, onCardLike }) => {
+  const { currentUser } = useCurrentUser();
+
+  const userCards = cards.filter((card) => card.owner === currentUser?._id);
 
   return (
     <div className="profile">
@@ -14,10 +15,10 @@ const Profile = ({ cards, onCardClick, onCardDelete, onAddNewClick }) => {
       </section>
       <section className="profile-clothes">
         <ClothesSection
-          sectionData={cards}
+          sectionData={userCards}
           onAddNewClick={onAddNewClick}
           onCardClick={onCardClick}
-          onCardDelete={onCardDelete}
+          onCardLike={onCardLike}
         />
       </section>
     </div>

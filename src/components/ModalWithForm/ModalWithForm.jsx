@@ -1,10 +1,9 @@
-import React from "react";
+
 import close from "../../images/close.png";
 import "../ModalWithForm/ModalWithForm.css";
 
 export default function ModalWithForm({
   isOpen,
-  name,
   title,
   buttonText,
   onClose,

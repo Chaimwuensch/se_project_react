@@ -1,16 +1,21 @@
-import React from "react";
+
+import { useCurrentUser } from "../../contexts/CurrentUserContext";
 import close from "../../images/close-white.svg";
 import "../ItemModal/ItemModal.css";
 export default function ItemModal({
-  activeModal,
   card,
   onDeleteClick,
   item,
   onClose,
   isOpen = false,
 }) {
+  const { currentUser, isLoggedIn } = useCurrentUser();
+
   if (!isOpen) return null;
   if (!item) return null;
+
+  const isOwner = isLoggedIn && currentUser?._id === item.owner;
+
   const handleDelete = () => {
     onDeleteClick(card);
   };
@@ -30,15 +35,16 @@ export default function ItemModal({
             <img src={item.imageUrl} alt={item.name} className="modal__image" />
           )}
           <div className="modal__footer-container">
-            {" "}
-            <h2 className="modal-title">{item.name || "Item"}</h2>{" "}
-            <button
-              className="modal__delete-button"
-              type="button"
-              onClick={handleDelete}
-            >
-              Delete item
-            </button>
+            <h2 className="modal-title">{item.name || "Item"}</h2>
+            {isOwner && (
+              <button
+                className="modal__delete-button"
+                type="button"
+                onClick={handleDelete}
+              >
+                Delete item
+              </button>
+            )}
           </div>
 
           <h3 className="modal-condition">{`Weather: ${item.weather}`}</h3>

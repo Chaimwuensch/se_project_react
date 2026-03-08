@@ -1,11 +1,22 @@
+import { useCurrentUser } from "../../contexts/CurrentUserContext";
 import "./ItemCard.css";
 
-const ItemCard = ({ card, onCardClick }) => {
+const ItemCard = ({ card, onCardClick, onCardLike }) => {
+  const { currentUser, isLoggedIn } = useCurrentUser();
+
+  const isLiked =
+    isLoggedIn && card.likes && card.likes.includes(currentUser?._id);
+
   const handleClick = () => {
     onCardClick(card);
   };
 
-  // The ItemCard component renders an image and title of a clothing item.
+  const handleLikeClick = (e) => {
+    e.stopPropagation();
+    if (!isLoggedIn) return;
+    onCardLike(card.id || card._id, isLiked);
+  };
+
   return (
     <li className="card">
       <img
@@ -16,7 +27,13 @@ const ItemCard = ({ card, onCardClick }) => {
       />
       <div className="card__title-and-like">
         <p className="card__title">{card.name}</p>
-        <button type="button" className="card__like-button" />
+        {isLoggedIn && (
+          <button
+            type="button"
+            className={`card__like-button ${isLiked ? "card__like-button_active" : ""}`}
+            onClick={handleLikeClick}
+          />
+        )}
       </div>
     </li>
   );

@@ -1,19 +1,22 @@
-export function createCard() {
-  // create a fetch request to the server, to create the card
-}
-
 export default class Api {
   constructor({ baseUrl, headers }) {
     this._baseUrl = baseUrl;
     this._headers = headers;
   }
 
+  _getAuthHeaders() {
+    const token = localStorage.getItem("token");
+    return {
+      ...this._headers,
+      ...(token && { Authorization: `Bearer ${token}` }),
+    };
+  }
+
   async _checkResponse(res) {
     if (res.ok) {
       return res.json();
     }
-    const text = await res.text();
-    console.error("API Error:", res.status, text);
+    await res.text();
     return Promise.reject(`Error: ${res.status}`);
   }
 
@@ -26,7 +29,7 @@ export default class Api {
   createItem({ name, weather, imageUrl }) {
     return fetch(`${this._baseUrl}/items`, {
       method: "POST",
-      headers: this._headers,
+      headers: this._getAuthHeaders(),
       body: JSON.stringify({ name, weather, imageUrl }),
     }).then((res) => this._checkResponse(res));
   }
@@ -34,7 +37,22 @@ export default class Api {
   deleteItem(id) {
     return fetch(`${this._baseUrl}/items/${id}`, {
       method: "DELETE",
-    }).then(this._checkResponse);
+      headers: this._getAuthHeaders(),
+    }).then((res) => this._checkResponse(res));
+  }
+
+  likeItem(id) {
+    return fetch(`${this._baseUrl}/items/${id}/likes`, {
+      method: "PUT",
+      headers: this._getAuthHeaders(),
+    }).then((res) => this._checkResponse(res));
+  }
+
+  unlikeItem(id) {
+    return fetch(`${this._baseUrl}/items/${id}/likes`, {
+      method: "DELETE",
+      headers: this._getAuthHeaders(),
+    }).then((res) => this._checkResponse(res));
   }
 }
 

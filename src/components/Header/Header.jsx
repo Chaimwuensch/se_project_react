@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch";
+import { useCurrentUser } from "../../contexts/CurrentUserContext";
 import "./Header.css";
 import "./Navigation.css";
 import logoPath from "../../images/logo.png";
-import avatarDefault from "../../images/userAvatar.png";
 
-const Header = ({ weatherData, handleAddClick, username, avatar }) => {
+const Header = ({ weatherData, handleAddClick, onSignOut }) => {
+  const { currentUser, isLoggedIn } = useCurrentUser();
+
   if (!weatherData) return null;
   const currentDate = new Date().toLocaleString("default", {
     month: "long",
@@ -25,27 +27,45 @@ const Header = ({ weatherData, handleAddClick, username, avatar }) => {
       <nav className="navigation">
         <ul className="navigation__container">
           <ToggleSwitch />
-          <li>
-            <button onClick={handleAddClick} className="navigation__button">
-              + Add clothes
-            </button>
-          </li>
-          <li>
-            <Link to="/profile" className="navigation__link">
-              {username}
-              {avatarDefault ? (
-                <img
-                  className="navigation__user"
-                  src={avatarDefault}
-                  alt="user avatar"
-                />
-              ) : (
-                <span className="navigation__user navigation__user_type_none">
-                  {username?.toUpperCase().charAt(0) || ""}
-                </span>
-              )}
-            </Link>
-          </li>
+          {isLoggedIn ? (
+            <>
+              <li>
+                <button onClick={handleAddClick} className="navigation__button">
+                  + Add clothes
+                </button>
+              </li>
+              <li>
+                <Link to="/profile" className="navigation__link">
+                  {currentUser?.name}
+                  {currentUser?.avatar ? (
+                    <img
+                      className="navigation__user"
+                      src={currentUser.avatar}
+                      alt="user avatar"
+                    />
+                  ) : (
+                    <span className="navigation__user navigation__user_type_none">
+                      {currentUser?.name?.toUpperCase().charAt(0) || ""}
+                    </span>
+                  )}
+                </Link>
+              </li>
+              <li>
+                <button
+                  onClick={onSignOut}
+                  className="navigation__button navigation__logout"
+                >
+                  Sign out
+                </button>
+              </li>
+            </>
+          ) : (
+            <li>
+              <button onClick={handleAddClick} className="navigation__button">
+                Sign up
+              </button>
+            </li>
+          )}
         </ul>
       </nav>
     </header>

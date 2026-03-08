@@ -65,18 +65,6 @@
       "weather": "cold",
       "imageUrl": "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Scarf.png?etag=74efbee93810c926b5507e862c6cb76c",
       "id": 17
-    },
-    {
-      "name": "evetvtrvtrevtr",
-      "weather": "cold",
-      "imageUrl": "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Scarf.png?etag=74efbee93810c926b5507e862c6cb76c",
-      "id": 18
-    },
-    {
-      "name": "ggg",
-      "weather": "cold",
-      "imageUrl": "https://d35aaqx5ub95lt.cloudfront.net/images/super/8183c77cba99daf1e900fb5f9b0cc671.svg",
-      "id": 19
     }
   ]
 }

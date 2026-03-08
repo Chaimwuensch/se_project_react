@@ -1,4 +1,4 @@
-import React from "react";
+
 import WeatherCard from "../WeatherCard/WeatherCard";
 import ItemCard from "../ItemCard/ItemCard";
 import { getWeatherCondition } from "../../utils/weatherApi";
@@ -10,17 +10,17 @@ export default function Main({
   onItemClick,
   weather,
   weatherLoading,
+  onCardLike,
 }) {
   const { currentTemperatureUnit } = useCurrentTemperatureUnit();
   const unit = currentTemperatureUnit === "F" ? "°F" : "°C";
   const tempData = weather?.temperature || {};
-  const displayTemp =
-    tempData[currentTemperatureUnit === "F" ? "F" : "C"];
+  const displayTemp = tempData[currentTemperatureUnit === "F" ? "F" : "C"];
   const condition = getWeatherCondition(displayTemp);
 
-  const filtered = items.filter((it) => {
-    const w = (it.weather || "").toString().toLowerCase();
-    return w === condition;
+  const filtered = items.filter((item) => {
+    const itemWeather = (item.weather || "").toString().toLowerCase();
+    return itemWeather === condition;
   });
 
   return (
@@ -40,7 +40,12 @@ export default function Main({
         ) : (
           <ul className="items-grid">
             {filtered.map((item) => (
-              <ItemCard key={item.id} card={item} onCardClick={onItemClick} />
+              <ItemCard
+                key={item.id || item._id}
+                card={item}
+                onCardClick={onItemClick}
+                onCardLike={onCardLike}
+              />
             ))}
           </ul>
         )}

@@ -1,5 +1,7 @@
 # WTWR — What To Wear (Frontend)
 
+**Backend Repository:** [se_project_express](https://github.com/YOUR_USERNAME/se_project_express)
+
 This repository contains the frontend for the "WTWR" project used in Sprint 10.
 
 ## Quick start
@@ -28,18 +30,31 @@ export const API_KEY = "0327c72573e5919f2a22571adf96ad6b";
 
 If `API_KEY` is empty the app will use a safe mocked weather (72°F) so the UI still works offline.
 
+## Features
+
+- Weather-based clothing recommendations
+- User authentication with JWT
+- Add/delete/like clothing items
+- Profile management
+- Temperature unit toggle (°F/°C)
+
 ## What I implemented
 
-- App wrapper and top-level state
-- Default clothing items (in `src/utils/defaultClothingItems.js`)
-- Weather helper (`src/utils/weatherApi.js`)
-- Header, Main, Footer, WeatherCard, ItemCard, ModalWithForm, ItemModal
-- Styling for header, weather card, item cards, and modals (in `src/blocks/`)
+- App wrapper with JWT auth check on mount
+- Header with conditional nav (sign in/profile based on auth state)
+- Main page with weather card and filtered items
+- Protected /profile route
+- ItemCard with like button (auth-only)
+- LoginModal & RegisterModal for sign up/sign in
+- API integration with Authorization headers for protected endpoints
+- Likes functionality (PUT/DELETE /items/:id/likes)
+- User profile filtering (only show own items on profile page)
+- SideBar with user info
+- Temperature context for °F/°C toggle
 
 ## Notes
 
-- The Add Clothes modal currently uses a placeholder submit handler. Replace the form inputs and `onSubmit` handling in `App.jsx` to persist real data.
-- # For production deployment to GitHub Pages, follow the instructions in the sprint notes (add `gh-pages`, `homepage`, `predeploy`/`deploy` scripts and `base` in `vite.config.js`).
+- For production deployment to GitHub Pages, follow the instructions in the sprint notes (add `gh-pages`, `homepage`, `predeploy`/`deploy` scripts and `base` in `vite.config.js`).
 
 # WTWR (What to Wear?)
 

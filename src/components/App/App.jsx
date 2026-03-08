@@ -1,26 +1,36 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Header from "../Header/Header";
 import Main from "../main/main";
 import Footer from "../Footer/Footer";
 import ItemModal from "../ItemModal/ItemModal";
 import AddItemModal from "../AddItemModal/AddItemModal";
-import ClothesSection from "../ClothesSection/ClothesSection";
 import Profile from "../Profile/Profile";
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
+import LoginModal from "../LoginModal/LoginModal";
+import RegisterModal from "../RegisterModal/RegisterModal";
 import { defaultClothingItems } from "../../utils/defaultClothingItems";
 import { fetchWeather } from "../../utils/weatherApi";
 import { API_KEY, DEFAULT_LAT, DEFAULT_LON } from "../../utils/constants";
 import { CurrentTemperatureUnitProvider } from "../../contexts/CurrentTemperatureUnitContext";
+import {
+  CurrentUserProvider,
+  useCurrentUser,
+} from "../../contexts/CurrentUserContext";
 import { api } from "../../utils/api";
+import { getCurrentUser, getToken, removeToken } from "../../utils/auth";
 import "./App.css";
 
-function DeleteConfirmationModal({ isOpen, onClose, onConfirm, itemName }) {
+function DeleteConfirmationModal({ isOpen, onClose, onConfirm }) {
   if (!isOpen) return null;
   return (
     <div className={`modal ${isOpen ? "modal_is-opened" : ""}`}>
       <div className="modal__overlay" onClick={onClose}>
         <div className="modal__content" onClick={(e) => e.stopPropagation()}>
-          <p>Are you sure you want to delete this item? This action is irreversible.</p>
+          <p>
+            Are you sure you want to delete this item? This action is
+            irreversible.
+          </p>
           <div className="modal__buttons">
             <button
               className="modal__button modal__button_type_delete"
@@ -41,7 +51,7 @@ function DeleteConfirmationModal({ isOpen, onClose, onConfirm, itemName }) {
   );
 }
 
-export default function App() {
+function AppContent() {
   const [activeModal, setActiveModal] = useState("");
   const [cardToDelete, setCardToDelete] = useState(null);
   const [selectedCard, setSelectedCard] = useState(null);
@@ -54,18 +64,34 @@ export default function App() {
     temperature: { F: undefined, C: undefined },
   });
   const [weatherLoading, setWeatherLoading] = useState(false);
-  const [weatherSource, setWeatherSource] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const { setCurrentUser, isLoggedIn, setIsLoggedIn } = useCurrentUser();
 
   const handleCardClick = (card) => {
     setSelectedCard(card);
     setActiveModal("item");
   };
 
+  // Check token on mount and restore user session
+  useEffect(() => {
+    const token = getToken();
+    if (token) {
+      getCurrentUser(token)
+        .then((user) => {
+          setCurrentUser(user);
+          setIsLoggedIn(true);
+        })
+        .catch(() => {
+          removeToken();
+          setIsLoggedIn(false);
+        });
+    }
+  }, [setCurrentUser, setIsLoggedIn]);
+
+  // Fetch weather on mount
   useEffect(() => {
     let mounted = true;
 
-    async function loadUsingCoords(lat, lon, label) {
+    async function loadUsingCoords(lat, lon) {
       try {
         const res = await fetchWeather(lat, lon, API_KEY);
         if (!mounted) return;
@@ -77,7 +103,6 @@ export default function App() {
           temperature: res.temperature,
         });
         setWeatherLoading(false);
-        setWeatherSource(label);
       } catch (err) {
         if (!mounted) return;
         setWeather({
@@ -88,7 +113,6 @@ export default function App() {
           temperature: { F: 72, C: 22 },
         });
         setWeatherLoading(false);
-        setWeatherSource("fallback");
       }
     }
 
@@ -132,7 +156,7 @@ export default function App() {
         }));
         setItems(normalized);
       })
-      .catch((err) => {
+      .catch(() => {
         const normalized = defaultClothingItems.map((it) => ({
           ...it,
           imageUrl: it.imageUrl || it.link,
@@ -143,6 +167,10 @@ export default function App() {
   }, []);
 
   function handleOpenAdd() {
+    if (!isLoggedIn) {
+      setActiveModal("login");
+      return;
+    }
     setActiveModal("add");
   }
 
@@ -193,16 +221,8 @@ export default function App() {
       setItems((prev) => [normalizedNew, ...prev]);
       resetForm();
       handleCloseModal();
-    } catch (err) {
-      const localItem = {
-        id: Date.now(),
-        name: item.name,
-        imageUrl: item.imageUrl,
-        weather: item.weather.toLowerCase(),
-      };
-      setItems((prev) => [localItem, ...prev]);
-      resetForm();
-      handleCloseModal();
+    } catch {
+      alert("Failed to add item. Please try again.");
     }
   }
 
@@ -216,7 +236,35 @@ export default function App() {
         );
         handleCloseModal();
       })
-      .catch((err) => console.error("Error deleting item:", err));
+      .catch(() => alert("Failed to delete item"));
+  };
+
+  const handleCardLike = async (id, isLiked) => {
+    try {
+      if (isLiked) {
+        await api.unlikeItem(id);
+      } else {
+        await api.likeItem(id);
+      }
+      // Refetch items to get updated likes
+      const updated = await api.getItems();
+      const normalized = updated.map((it) => ({
+        ...it,
+        id: it.id || it._id,
+        imageUrl: it.imageUrl || it.link,
+        weather: (it.weather || "").toLowerCase(),
+      }));
+      setItems(normalized);
+    } catch {
+      alert("Failed to update like");
+    }
+  };
+
+  const handleSignOut = () => {
+    removeToken();
+    setCurrentUser(null);
+    setIsLoggedIn(false);
+    handleCloseModal();
   };
 
   return (
@@ -227,6 +275,7 @@ export default function App() {
             handleAddClick={handleOpenAdd}
             location={weather?.city}
             weatherData={weather}
+            onSignOut={handleSignOut}
           />
           <Routes>
             <Route
@@ -237,26 +286,27 @@ export default function App() {
                   onItemClick={handleOpenItem}
                   weather={weather}
                   weatherLoading={weatherLoading}
+                  onCardLike={handleCardLike}
                 />
               }
             />
             <Route
               path="/profile"
               element={
-                <Profile
-                  cards={items}
-                  onCardClick={handleCardClick}
-                  onAddNewClick={() => setActiveModal("add")}
-                />
+                <ProtectedRoute>
+                  <Profile
+                    cards={items}
+                    onCardClick={handleCardClick}
+                    onAddNewClick={() => setActiveModal("add")}
+                    onCardLike={handleCardLike}
+                  />
+                </ProtectedRoute>
               }
             />
           </Routes>
-
           <Footer />
         </div>
-
         <ItemModal
-          activeModal={activeModal}
           card={selectedCard}
           onDeleteClick={openConfirmationModal}
           item={selectedCard}
@@ -272,9 +322,26 @@ export default function App() {
           isOpen={activeModal === "delete-confirmation"}
           onClose={handleCloseModal}
           onConfirm={handleCardDelete}
-          itemName={cardToDelete?.name}
+        />
+        <LoginModal
+          isOpen={activeModal === "login"}
+          onClose={handleCloseModal}
+          onSwitchToRegister={() => setActiveModal("register")}
+        />
+        <RegisterModal
+          isOpen={activeModal === "register"}
+          onClose={handleCloseModal}
+          onSwitchToLogin={() => setActiveModal("login")}
         />
       </div>
     </CurrentTemperatureUnitProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <CurrentUserProvider>
+      <AppContent />
+    </CurrentUserProvider>
   );
 }

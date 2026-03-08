@@ -6,7 +6,6 @@ export const CurrentTemperatureUnitProvider = ({ children }) => {
   const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState("F");
 
   const handleToggleSwitchChange = (newUnit) => {
-    console.log("Context updating to:", newUnit);
     setCurrentTemperatureUnit(newUnit);
   };
 

@@ -1,12 +1,12 @@
 import { useState, useContext, useEffect } from "react";
 import "./ToggleSwitch.css";
-import {CurrentTemperatureUnitContext} from "../../contexts/CurrentTemperatureUnitContext";
+import { CurrentTemperatureUnitContext } from "../../contexts/CurrentTemperatureUnitContext";
 
 const ToggleSwitch = () => {
   const { currentTemperatureUnit, handleToggleSwitchChange } = useContext(
     CurrentTemperatureUnitContext
   );
-  
+
   const [isChecked, setIsChecked] = useState(currentTemperatureUnit === "C");
 
   useEffect(() => {
@@ -16,13 +16,8 @@ const ToggleSwitch = () => {
   const handleChange = () => {
     const newValue = !isChecked;
     const newUnit = newValue ? "C" : "F";
-    
-    console.log("Toggle changing to:", newUnit);
-    
-    // Update local state (makes switch move)
+
     setIsChecked(newValue);
-    
-    // Update context (updates cards)
     handleToggleSwitchChange(newUnit);
   };
 

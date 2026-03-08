@@ -15,8 +15,8 @@
   border-top-left-radius: 20px;
 }
 
-.modal-close{
- color: #fff;
+.modal-close {
+  color: #fff;
 }
 
 .modal-condition {
@@ -48,7 +48,7 @@
   border: none;
   color: #ff4d00;
   margin-right: 32px;
- line-height: 24px;
+  line-height: 24px;
 }
 
 .modal__delete-button:hover {

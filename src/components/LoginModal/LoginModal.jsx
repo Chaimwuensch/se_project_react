@@ -39,6 +39,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
       onSubmit={handleSubmit}
     >
       {error && <p className="modal-error">{error}</p>}
+      <label className="modal-form__label">Email</label>
       <input
         type="email"
         name="email"
@@ -48,6 +49,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
         className="modal-form__input"
         required
       />
+      <label className="modal-form__label">Password</label>
       <input
         type="password"
         name="password"

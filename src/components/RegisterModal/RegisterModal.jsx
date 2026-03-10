@@ -41,15 +41,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
       onSubmit={handleSubmit}
     >
       {error && <p className="modal-error">{error}</p>}
-      <input
-        type="text"
-        name="name"
-        placeholder="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="modal-form__input"
-        required
-      />
+      <label className="modal-form__label">Email*</label>
       <input
         type="email"
         name="email"
@@ -59,12 +51,23 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
         className="modal-form__input"
         required
       />
+      <label className="modal-form__label">Password*</label>
       <input
         type="password"
         name="password"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        className="modal-form__input"
+        required
+      />
+      <label className="modal-form__label">Name*</label>
+      <input
+        type="text"
+        name="name"
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
         className="modal-form__input"
         required
       />

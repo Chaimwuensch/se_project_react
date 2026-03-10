@@ -174,6 +174,10 @@ function AppContent() {
     setActiveModal("add");
   }
 
+  function handleSignInClick() {
+    setActiveModal("login");
+  }
+
   const openConfirmationModal = () => {
     setCardToDelete(selectedCard);
     setActiveModal("delete-confirmation");
@@ -273,6 +277,7 @@ function AppContent() {
         <div className="page__wrapper">
           <Header
             handleAddClick={handleOpenAdd}
+            handleSignInClick={handleSignInClick}
             location={weather?.city}
             weatherData={weather}
             onSignOut={handleSignOut}

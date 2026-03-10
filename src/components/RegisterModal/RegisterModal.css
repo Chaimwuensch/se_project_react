@@ -1,39 +1,54 @@
 .modal-error {
   color: #ff4d00;
   font-size: 14px;
-  margin-bottom: 12px;
-  text-align: center;
+  margin: 0 0 20px 0;
+  text-align: left;
+}
+
+.modal-form__label {
+  display: block;
+  font-family: "CabinetGrotesk-Medium";
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+  color: #000000;
+  margin-bottom: 4px;
 }
 
 .modal-form__input {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 16px;
-  border: 1px solid #d0d0d0;
-  border-radius: 4px;
+  padding: 8px 0;
+  margin: 0 0 20px 0;
+  border: none;
+  border-bottom: 1px solid #000000;
   font-family: "CabinetGrotesk-Medium";
-  font-size: 14px;
+  font-size: 16px;
   box-sizing: border-box;
+  background-color: transparent;
+}
+
+.modal-form__input::placeholder {
+  color: #999999;
 }
 
 .modal-form__input:focus {
   outline: none;
-  border-color: #ff4d00;
+  border-bottom-color: #000000;
 }
 
 .modal-form__footer {
-  margin-top: 16px;
+  margin: 20px 0 0 0;
   font-size: 14px;
-  text-align: center;
+  text-align: left;
   color: #2a2a2a;
 }
 
 .modal-form__link {
   background: none;
   border: none;
-  color: #ff4d00;
+  color: #2a2a2a;
   cursor: pointer;
-  text-decoration: underline;
+  text-decoration: none;
   padding: 0;
   font-family: inherit;
   font-size: inherit;

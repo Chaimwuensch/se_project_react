@@ -1,10 +1,10 @@
 const BASE_URL = "http://localhost:3001";
 
-export const signup = async (email, password, name) => {
+export const signup = async (email, password, name, avatar) => {
   const res = await fetch(`${BASE_URL}/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password, name }),
+    body: JSON.stringify({ email, password, name, avatar }),
   });
   if (!res.ok) {
     const error = await res.text();
@@ -27,6 +27,7 @@ export const signin = async (email, password) => {
 };
 
 export const getCurrentUser = async (token) => {
+  console.log("Fetching current user with token:", token);
   const res = await fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     headers: {

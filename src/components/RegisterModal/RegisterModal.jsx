@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ModalWithForm from "../ModalWithForm/ModalWithForm";
-import { signup, setToken } from "../../utils/auth";
+import { signup, setToken, signin } from "../../utils/auth";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
 import "./RegisterModal.css";
 
@@ -11,19 +11,23 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { setCurrentUser, setIsLoggedIn } = useCurrentUser();
+  const [avatar, setAvatar] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
     try {
-      const { token, user } = await signup(email, password, name);
+      const { user } = await signup(email, password, name, avatar);
+      signin(email, password); 
       setToken(token);
       setCurrentUser(user);
       setIsLoggedIn(true);
       setEmail("");
       setPassword("");
       setName("");
+      setAvatar("");
+
       onClose();
     } catch (err) {
       setError(err.message || "Sign up failed");
@@ -61,13 +65,23 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
         className="modal-form__input"
         required
       />
-      <label className="modal-form__label">Name*</label>
+      <label className="modal-form__label">Name *</label>
       <input
         type="text"
         name="name"
         placeholder="Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
+        className="modal-form__input"
+        required
+      />
+            <label className="modal-form__label">Avatar URL *</label>
+      <input
+        type="text"
+        name="avatar"
+        placeholder="Avatar URL"
+        value={avatar}
+        onChange={(e) => setAvatar(e.target.value)}
         className="modal-form__input"
         required
       />

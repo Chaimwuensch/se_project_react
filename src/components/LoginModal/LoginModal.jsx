@@ -2,11 +2,14 @@ import { useState } from "react";
 import ModalWithForm from "../ModalWithForm/ModalWithForm";
 import { signin, setToken } from "../../utils/auth";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
+import useForm from "../../hooks/useForm";
 import "./LoginModal.css";
 
 const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { values, handleChange, resetForm } = useForm({
+    email: "",
+    password: "",
+  });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { setCurrentUser, setIsLoggedIn } = useCurrentUser();
@@ -15,13 +18,13 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
+
     try {
-      const { token, user } = await signin(email, password);
+      const { token, user } = await signin(values.email, values.password);
       setToken(token);
       setCurrentUser(user);
       setIsLoggedIn(true);
-      setEmail("");
-      setPassword("");
+      resetForm();
       onClose();
     } catch (err) {
       setError(err.message || "Sign in failed");
@@ -39,26 +42,29 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
       onSubmit={handleSubmit}
     >
       {error && <p className="modal-error">{error}</p>}
+
       <label className="modal-form__label">Email</label>
       <input
         type="email"
         name="email"
         placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        value={values.email}
+        onChange={handleChange}
         className="modal-form__input"
         required
       />
+
       <label className="modal-form__label">Password</label>
       <input
         type="password"
         name="password"
         placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        value={values.password}
+        onChange={handleChange}
         className="modal-form__input"
         required
       />
+
       <p className="modal-form__footer">
         Don&apos;t have an account?{" "}
         <button

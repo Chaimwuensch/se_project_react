@@ -9,7 +9,7 @@ import Profile from "../Profile/Profile";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import LoginModal from "../LoginModal/LoginModal";
 import RegisterModal from "../RegisterModal/RegisterModal";
-import { defaultClothingItems } from "../../utils/defaultClothingItems";
+import DeleteConfirmationModal from "../DeleteConfirmationModal/DeleteConfirmationModal";
 import { fetchWeather } from "../../utils/weatherApi";
 import { API_KEY, DEFAULT_LAT, DEFAULT_LON } from "../../utils/constants";
 import { CurrentTemperatureUnitProvider } from "../../contexts/CurrentTemperatureUnitContext";
@@ -20,36 +20,6 @@ import {
 import { api } from "../../utils/api";
 import { getCurrentUser, getToken, removeToken } from "../../utils/auth";
 import "./App.css";
-
-function DeleteConfirmationModal({ isOpen, onClose, onConfirm }) {
-  if (!isOpen) return null;
-  return (
-    <div className={`modal ${isOpen ? "modal_is-opened" : ""}`}>
-      <div className="modal__overlay" onClick={onClose}>
-        <div className="modal__content" onClick={(e) => e.stopPropagation()}>
-          <p>
-            Are you sure you want to delete this item? This action is
-            irreversible.
-          </p>
-          <div className="modal__buttons">
-            <button
-              className="modal__button modal__button_type_delete"
-              onClick={onConfirm}
-            >
-              Yes, delete item
-            </button>
-            <button
-              className="modal__button modal__button_type_cancel"
-              onClick={onClose}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function AppContent() {
   const [activeModal, setActiveModal] = useState("");
@@ -156,14 +126,9 @@ function AppContent() {
         }));
         setItems(normalized);
       })
-      .catch(() => {
-        const normalized = defaultClothingItems.map((it) => ({
-          ...it,
-          imageUrl: it.imageUrl || it.link,
-          weather: (it.weather || "").toLowerCase(),
-        }));
-        setItems(normalized);
-      });
+      .catch((err) => {
+  console.error("Failed to fetch items:", err);
+});
   }, []);
 
   function handleOpenAdd() {

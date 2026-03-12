@@ -2,7 +2,7 @@ import { useState } from "react";
 import ModalWithForm from "../ModalWithForm/ModalWithForm";
 import { signin, setToken } from "../../utils/auth";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
-import useForm from "../../hooks/useForm";
+import { useForm } from "../../hooks/useForm";
 import "./LoginModal.css";
 
 const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {

@@ -90,7 +90,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, handleRegister }) => 
         onChange={handleChange}
         className="modal-form__input"
         required
-      />8
+      />
     </ModalWithForm>
   );
 };

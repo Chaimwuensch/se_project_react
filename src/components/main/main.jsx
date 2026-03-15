@@ -16,8 +16,7 @@ export default function Main({
   const unit = currentTemperatureUnit === "F" ? "°F" : "°C";
   const tempData = weather?.temperature || {};
   const displayTemp = tempData[currentTemperatureUnit === "F" ? "F" : "C"];
-  const condition = getWeatherCondition(displayTemp);
-
+  const condition = getWeatherCondition(tempData.F);
   const filtered = items.filter((item) => {
     const itemWeather = (item.weather || "").toString().toLowerCase();
     return itemWeather === condition;

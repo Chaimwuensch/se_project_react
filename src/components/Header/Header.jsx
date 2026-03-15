@@ -5,7 +5,7 @@ import "./Header.css";
 import "./Navigation.css";
 import logoPath from "../../images/logo.png";
 
-const Header = ({ weatherData, handleAddClick, handleSignInClick, onSignOut }) => {
+const Header = ({ weatherData, handleAddClick, handleSignInClick, onSignOut, handleSignUpClick }) => {
   const { currentUser, isLoggedIn } = useCurrentUser();
 
   if (!weatherData) return null;
@@ -67,7 +67,7 @@ const Header = ({ weatherData, handleAddClick, handleSignInClick, onSignOut }) =
                 </button>
               </li>
               <li>
-                <button onClick={handleAddClick} className="navigation__button">
+                <button onClick={handleSignUpClick} className="navigation__button">
                   Sign up
                 </button>
               </li>

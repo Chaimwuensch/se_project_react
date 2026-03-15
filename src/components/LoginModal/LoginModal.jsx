@@ -5,7 +5,7 @@ import { useCurrentUser } from "../../contexts/CurrentUserContext";
 import { useForm } from "../../hooks/useForm";
 import "./LoginModal.css";
 
-const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
+const LoginModal = ({ isOpen, onClose, onSwitchToRegister, handleLogin }) => {
   const { values, handleChange, resetForm } = useForm({
     email: "",
     password: "",
@@ -20,10 +20,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
     setIsLoading(true);
 
     try {
-      const { token, user } = await signin(values.email, values.password);
-      setToken(token);
-      setCurrentUser(user);
-      setIsLoggedIn(true);
+      await handleLogin(values);
       resetForm();
       onClose();
     } catch (err) {
@@ -40,6 +37,11 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
       buttonText={isLoading ? "Signing in..." : "Sign In"}
       onClose={onClose}
       onSubmit={handleSubmit}
+      secondaryButtonText="or Sign up"
+      onSecondaryButtonClick={() => {
+        onClose();
+        onSwitchToRegister();
+      }}
     >
       {error && <p className="modal-error">{error}</p>}
 
@@ -64,20 +66,6 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
         className="modal-form__input"
         required
       />
-
-      <p className="modal-form__footer">
-        Don&apos;t have an account?{" "}
-        <button
-          type="button"
-          onClick={() => {
-            onClose();
-            onSwitchToRegister();
-          }}
-          className="modal-form__link"
-        >
-          Sign up
-        </button>
-      </p>
     </ModalWithForm>
   );
 };

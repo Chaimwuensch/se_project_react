@@ -18,8 +18,8 @@ import {
   useCurrentUser,
 } from "../../contexts/CurrentUserContext";
 import { api } from "../../utils/api";
-import { getCurrentUser, getToken, removeToken } from "../../utils/auth";
 import "./App.css";
+import { signup, setToken, signin, getCurrentUser, getToken, removeToken } from "../../utils/auth";
 
 function AppContent() {
   const [activeModal, setActiveModal] = useState("");
@@ -40,6 +40,34 @@ function AppContent() {
     setSelectedCard(card);
     setActiveModal("item");
   };
+  const handleRegister = async (values) => {
+        try {
+          const user = await signup(
+            values.email,
+            values.password,
+            values.name,
+            values.avatar
+          );
+    
+          const { token } = await signin(values.email, values.password);
+    
+          setToken(token);
+          setCurrentUser(user);
+          setIsLoggedIn(true);
+        } catch (err) {
+          throw err;
+        }};
+
+const handleLogin = async (values) => {
+    try {
+      const { token} = await signin(values.email, values.password);
+      const user = await getCurrentUser(token);
+      setToken(token);
+      setCurrentUser(user);
+      setIsLoggedIn(true);
+    } catch (err) {
+      throw err;
+    }};
 
   // Check token on mount and restore user session
   useEffect(() => {
@@ -143,6 +171,9 @@ function AppContent() {
     setActiveModal("login");
   }
 
+  const handleSignUpClick = () => {
+    setActiveModal("register");
+  };
   const openConfirmationModal = () => {
     setCardToDelete(selectedCard);
     setActiveModal("delete-confirmation");
@@ -236,6 +267,7 @@ function AppContent() {
     handleCloseModal();
   };
 
+
   return (
     <CurrentTemperatureUnitProvider>
       <div className="page">
@@ -243,6 +275,7 @@ function AppContent() {
           <Header
             handleAddClick={handleOpenAdd}
             handleSignInClick={handleSignInClick}
+            handleSignUpClick={handleSignUpClick}
             location={weather?.city}
             weatherData={weather}
             onSignOut={handleSignOut}
@@ -269,6 +302,7 @@ function AppContent() {
                     onCardClick={handleCardClick}
                     onAddNewClick={() => setActiveModal("add")}
                     onCardLike={handleCardLike}
+                    onSignOut={handleSignOut}
                   />
                 </ProtectedRoute>
               }
@@ -297,11 +331,13 @@ function AppContent() {
           isOpen={activeModal === "login"}
           onClose={handleCloseModal}
           onSwitchToRegister={() => setActiveModal("register")}
+          handleLogin={handleLogin}
         />
         <RegisterModal
           isOpen={activeModal === "register"}
           onClose={handleCloseModal}
           onSwitchToLogin={() => setActiveModal("login")}
+          handleRegister={handleRegister}
         />
       </div>
     </CurrentTemperatureUnitProvider>

@@ -9,6 +9,8 @@ export default function ModalWithForm({
   onClose,
   onSubmit,
   children,
+  secondaryButtonText,
+  onSecondaryButtonClick,
 }) {
   function handleOverlayClick(e) {
     if (e.target.classList.contains("modal__overlay")) {
@@ -34,9 +36,20 @@ export default function ModalWithForm({
           <h2 className="modal-title">{title}</h2>
           <form className="modal-form" onSubmit={onSubmit}>
             {children}
-            <button type="submit" className="modal-form__submit">
+           <div className="modal__buttons">
+            <button type="submit" className="modal__submit">
               {buttonText}
             </button>
+            {secondaryButtonText && (
+              <button
+                type="button"
+                className="modal__secondary"
+                onClick={onSecondaryButtonClick}
+              >
+                {secondaryButtonText}
+              </button>
+            )}
+            </div>
           </form>
         </div>
       </div>

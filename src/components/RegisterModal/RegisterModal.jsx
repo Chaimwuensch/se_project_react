@@ -2,10 +2,10 @@ import { useState } from "react";
 import ModalWithForm from "../ModalWithForm/ModalWithForm";
 import { signup, setToken, signin } from "../../utils/auth";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
-import useForm from "../../hooks/useForm";
+import { useForm } from "../../hooks/useForm";
 import "./RegisterModal.css";
 
-const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
+const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, handleRegister }) => {
   const { values, handleChange, resetForm } = useForm({
     email: "",
     password: "",
@@ -23,18 +23,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
     setIsLoading(true);
 
     try {
-      const { user } = await signup(
-        values.email,
-        values.password,
-        values.name,
-        values.avatar
-      );
-
-      const { token } = await signin(values.email, values.password);
-
-      setToken(token);
-      setCurrentUser(user);
-      setIsLoggedIn(true);
+      await handleRegister(values);
       resetForm();
       onClose();
     } catch (err) {
@@ -51,6 +40,11 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
       buttonText={isLoading ? "Signing up..." : "Sign Up"}
       onClose={onClose}
       onSubmit={handleSubmit}
+      secondaryButtonText="or Sign in"
+      onSecondaryButtonClick={() => {
+        onClose();
+        onSwitchToLogin();
+      }}
     >
       {error && <p className="modal-error">{error}</p>}
 
@@ -96,21 +90,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
         onChange={handleChange}
         className="modal-form__input"
         required
-      />
-
-      <p className="modal-form__footer">
-        Already have an account?{" "}
-        <button
-          type="button"
-          onClick={() => {
-            onClose();
-            onSwitchToLogin();
-          }}
-          className="modal-form__link"
-        >
-          Sign in
-        </button>
-      </p>
+      />8
     </ModalWithForm>
   );
 };

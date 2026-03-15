@@ -3,7 +3,7 @@ import "./Profile.css";
 import SideBar from "../SideBar/SideBar";
 import ClothesSection from "../ClothesSection/ClothesSection";
 
-const Profile = ({ cards, onCardClick, onAddNewClick, onCardLike }) => {
+const Profile = ({ cards, onCardClick, onAddNewClick, onCardLike, onSignOut }) => {
   const { currentUser } = useCurrentUser();
 
   const userCards = cards.filter((card) => card.owner === currentUser?._id);
@@ -11,7 +11,7 @@ const Profile = ({ cards, onCardClick, onAddNewClick, onCardLike }) => {
   return (
     <div className="profile">
       <section className="profile-sidebar">
-        <SideBar />
+        <SideBar onSignOut={onSignOut} />
       </section>
       <section className="profile-clothes">
         <ClothesSection

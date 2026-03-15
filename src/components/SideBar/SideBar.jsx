@@ -1,7 +1,7 @@
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
 import "./SideBar.css";
 
-const SideBar = ({ onSignOut, onEditProfile }) => {
+const SideBar = ({ onSignOut, onEditProfileClick }) => {
   const { currentUser } = useCurrentUser();
 
   return (
@@ -21,7 +21,7 @@ const SideBar = ({ onSignOut, onEditProfile }) => {
         <p className="sidebar__user-name">{currentUser?.name}</p>
       </div>
       <div className="sidebar__buttons">
-        <button onClick={onEditProfile} className="sidebar__button">
+        <button onClick={onEditProfileClick} className="sidebar__button">
           Change profile
         </button>
         <button

@@ -10,6 +10,7 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import LoginModal from "../LoginModal/LoginModal";
 import RegisterModal from "../RegisterModal/RegisterModal";
 import DeleteConfirmationModal from "../DeleteConfirmationModal/DeleteConfirmationModal";
+import EditProfileModal from "../EditProfileModal/EditProfileModal";
 import { fetchWeather } from "../../utils/weatherApi";
 import { API_KEY, DEFAULT_LAT, DEFAULT_LON } from "../../utils/constants";
 import { CurrentTemperatureUnitProvider } from "../../contexts/CurrentTemperatureUnitContext";
@@ -19,7 +20,7 @@ import {
 } from "../../contexts/CurrentUserContext";
 import { api } from "../../utils/api";
 import "./App.css";
-import { signup, setToken, signin, getCurrentUser, getToken, removeToken } from "../../utils/auth";
+import { signup, setToken, signin, getCurrentUser, getToken, removeToken, updateUserProfile } from "../../utils/auth";
 
 function AppContent() {
   const [activeModal, setActiveModal] = useState("");
@@ -39,6 +40,15 @@ function AppContent() {
   const handleCardClick = (card) => {
     setSelectedCard(card);
     setActiveModal("item");
+  };
+  const handleEditProfile = async (values) => {
+    try {
+      const token = getToken();
+      const updatedUser = await updateUserProfile(token, values);
+      setCurrentUser(updatedUser);
+    } catch (err) {
+      throw err;
+    }
   };
   const handleRegister = async (values) => {
         try {
@@ -298,6 +308,7 @@ const handleLogin = async (values) => {
               element={
                 <ProtectedRoute>
                   <Profile
+                    onEditProfileClick={() => setActiveModal("edit-profile")}
                     cards={items}
                     onCardClick={handleCardClick}
                     onAddNewClick={() => setActiveModal("add")}
@@ -338,6 +349,11 @@ const handleLogin = async (values) => {
           onClose={handleCloseModal}
           onSwitchToLogin={() => setActiveModal("login")}
           handleRegister={handleRegister}
+        />
+        <EditProfileModal
+          isOpen={activeModal === "edit-profile"}
+          onClose={handleCloseModal}
+          handleEditProfile={handleEditProfile}
         />
       </div>
     </CurrentTemperatureUnitProvider>

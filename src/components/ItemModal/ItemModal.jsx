@@ -47,7 +47,7 @@ export default function ItemModal({
             )}
           </div>
 
-          <h3 className="modal-condition">{`Weather: ${item.weather}`}</h3>
+          <h3 className="modal-title">{`Weather: ${item.weather}`}</h3>
         </div>
       </div>
     </div>

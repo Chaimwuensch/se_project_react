@@ -25,6 +25,10 @@
   border-radius: 50%;
 }
 
+.sidebar__button{
+  border: none;
+  
+}
 .sidebar__user-name {
   margin: 0;
   padding: 0;

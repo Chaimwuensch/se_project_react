@@ -29,7 +29,6 @@ const ItemCard = ({ card, onCardClick, onCardLike }) => {
         <p className="card__title">{card.name}</p>
         {isLoggedIn && (
           <button
-            type="button"
             className={`card__like-button ${isLiked ? "card__like-button_active" : ""}`}
             onClick={handleLikeClick}
           />

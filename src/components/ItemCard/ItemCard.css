@@ -51,7 +51,7 @@
   background-size: 21px 18px;
   border: none;
   padding: 0;
-  margin: 0;
+  margin-left: 10px;
   transition: 0.3s;
 }
 
@@ -60,7 +60,7 @@
   cursor: pointer;
 }
 
-.card__like-button_is-active {
+.card__like-button_active {
   background: transparent url("../../images/like-active.svg") no-repeat;
 }
 

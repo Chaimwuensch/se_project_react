@@ -20,7 +20,7 @@ const SideBar = ({ onSignOut, onEditProfileClick }) => {
         )}
         <p className="sidebar__user-name">{currentUser?.name}</p>
       </div>
-      <div className="sidebar__buttons">
+      <div className="sidebar__links">
         <button onClick={onEditProfileClick} className="sidebar__button">
           Change profile
         </button>

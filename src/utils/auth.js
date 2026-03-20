@@ -1,4 +1,8 @@
-const BASE_URL = "http://localhost:3001";
+const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://api.wearingstuff.jumpingcrab.com"
+    : "http://localhost:3001";
+
 
 export const signup = async (email, password, name, avatar) => {
   const res = await fetch(`${BASE_URL}/signup`, {

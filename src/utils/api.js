@@ -56,9 +56,13 @@ export default class Api {
   }
 }
 
+const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://api.wearingstuff.jumpingcrab.com"
+    : "http://localhost:3001";
 // Create an instance of the API
 const api = new Api({
-  baseUrl: "http://localhost:3001",
+  baseUrl,
   headers: {
     "Content-Type": "application/json",
   },

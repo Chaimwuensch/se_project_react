@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite --open",
     "build": "vite build",
+    "deploy": "npm run build && scp -r ./dist/* chaimwuensch@wearingstuff.jumpingcrab.com:/home/chaimwuensch/frontend",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "serve:api": "json-server --watch db.json --port 3001"
